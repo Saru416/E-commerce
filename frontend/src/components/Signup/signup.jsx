@@ -17,7 +17,7 @@ const SignUp = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const response = await dispatch(loginUser({email, password}));
+    const response = await dispatch(registerUser({email, password}));
     console.log(response);
     if (response.type === 'auth/signup/fulfilled') {
       navigate('/');

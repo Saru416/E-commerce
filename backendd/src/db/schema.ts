@@ -7,13 +7,20 @@ export const user = pgTable('user', {
   password: text('password').notNull()
 });
 
+export const category = pgTable('category', {
+  id: serial('id').primaryKey(), 
+  name: text('name').notNull(),
+  sub_category: text('sub_category').notNull()
+});
+
 export const product = pgTable('products', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description').notNull(),
   price: integer('price'),
-  category: text('category').notNull(),
-  sub_category: text('sub_category').notNull(),
+  category: integer('category')
+    .notNull()
+    .references(() => category.id, {onDelete: 'cascade'}),
   availableQuantity: integer('availableQuantity'),
   inStock: boolean('inStock').default(false),
   createdAt: timestamp('created_at').notNull().defaultNow(),

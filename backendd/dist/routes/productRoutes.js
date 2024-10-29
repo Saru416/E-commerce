@@ -10,7 +10,7 @@ router.post('/addProduct', productController_1.addProduct);
 router.get('/getallProducts', productController_1.getAllProducts);
 router.get('/product/:id', productController_1.getProductById);
 router.put('/updateProduct/:id', productController_1.updateProduct);
-router.delete('/deletProduct/:id', productController_1.deleteProduct);
+router.delete('/deleteProduct/:id', productController_1.deleteProduct);
 exports.default = router;
 /* Endpoints
 

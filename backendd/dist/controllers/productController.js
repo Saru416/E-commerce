@@ -15,12 +15,12 @@ const db_1 = require("../db/db");
 const drizzle_orm_1 = require("drizzle-orm");
 // Add new Product
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, price, category, sub_category, availableQuantity, description } = req.body;
-    if (!name || !price || !category || !sub_category || !description || !availableQuantity) {
+    const { name, price, category, availableQuantity, description } = req.body;
+    if (!name || !price || !category || !description || !availableQuantity) {
         res.status(400).json({ message: "All fields Required!" });
     }
     try {
-        yield db_1.db.insert(schema_1.product).values({ name, description, price, category, sub_category, availableQuantity });
+        yield db_1.db.insert(schema_1.product).values({ name, description, price, category, availableQuantity });
         res.status(201).json({ message: "Product Added" });
     }
     catch (error) {
@@ -66,7 +66,7 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const productId = typeof id === 'string' ? parseInt(id, 10) : id;
         const updatedProduct = yield db_1.db
-            .update(schema_1.product).set({ name, description, price, category, sub_category })
+            .update(schema_1.product).set({ name, description, price, category })
             .where((0, drizzle_orm_1.eq)(schema_1.product.id, productId))
             .returning();
         if (exports.updateProduct.length === 0) {
@@ -83,13 +83,16 @@ exports.updateProduct = updateProduct;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const productId = typeof id === 'string' ? parseInt(id, 10) : id;
+        const productId = parseInt(id, 10);
+        if (isNaN(productId)) {
+            res.status(400).json({ message: "Invalid product ID" });
+        }
         yield db_1.db.delete(schema_1.product).where((0, drizzle_orm_1.eq)(schema_1.product.id, productId));
-        res.status(201).json({ message: "Product Deleted" });
+        res.status(200).json({ message: "Product Deleted" });
     }
     catch (error) {
-        console.error("Error fetching product:", error);
-        res.status(500).json("Server Error!");
+        console.error("Error deleting product:", error);
+        res.status(500).json({ message: "Server Error!" });
     }
 });
 exports.deleteProduct = deleteProduct;

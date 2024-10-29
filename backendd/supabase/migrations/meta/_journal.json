@@ -2,19 +2,5 @@
   "version": "7",
   "dialect": "postgresql",
   "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1728801971802,
-      "tag": "0000_breezy_inhumans",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1728826259656,
-      "tag": "0001_moaning_microbe",
-      "breakpoints": true
-    }
   ]
 }

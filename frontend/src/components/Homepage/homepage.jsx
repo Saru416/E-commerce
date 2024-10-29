@@ -1,16 +1,8 @@
 import React, { useEffect } from "react";
 import myVideo from "../../assets/video.mp4"; // Correct import statement
 import Navbar from "../Navbar/navbar";
-import { fetchUser } from "../../redux/slice/userSlice";
-import { useDispatch } from "react-redux";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const res = dispatch(fetchUser());
-    console.log(res);
-  },[dispatch]);
 
   return (
     <>

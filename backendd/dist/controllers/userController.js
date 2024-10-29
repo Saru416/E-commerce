@@ -10,15 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllusers = exports.getuser = exports.login = exports.signUp = void 0;
-const supabase_services_1 = require("../services/supabase_services");
+//import { supabase } from "../services/supabase_services";
+const supabase_service_1 = require("../db/supabase-service");
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const { data, error } = yield supabase_services_1.supabase.auth.signUp({
+        const { data, error } = yield supabase_service_1.supabase.auth.signUp({
             email,
-            password,
+            password
         });
         if (error) {
+            console.log(error);
             res.status(400).json({ message: error.message });
         }
         else {
@@ -34,7 +36,7 @@ exports.signUp = signUp;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const { data, error } = yield supabase_services_1.supabase.auth.signInWithPassword({
+        const { data, error } = yield supabase_service_1.supabase.auth.signInWithPassword({
             email,
             password,
         });
@@ -52,7 +54,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.login = login;
 const getuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { data, error } = yield supabase_services_1.supabase.auth.getUser();
+        const { data, error } = yield supabase_service_1.supabase.auth.getUser();
         if (error) {
             res.status(400).json({ message: error.message });
         }
@@ -68,7 +70,7 @@ exports.getuser = getuser;
 // Admin getAllusers
 const getAllusers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { data, error } = yield supabase_services_1.supabase.auth.admin.listUsers();
+        const { data, error } = yield supabase_service_1.supabase.auth.admin.listUsers();
         if (error) {
             console.error("Supabase error:", error.message);
             res.status(400).json({ message: error.message });

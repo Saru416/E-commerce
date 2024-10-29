@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3100/user";
+const BASE_URL = "http://localhost:3200/user";
 
-const setAuthHeader = () => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  }
-};
+// const setAuthHeader = () => {
+//   const token = localStorage.getItem("token");
+//   if (token) {
+//     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+//   }
+// };
 
 // Add product
 export const addProduct = createAsyncThunk(
@@ -16,7 +16,8 @@ export const addProduct = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${BASE_URL}/addProduct`, credentials);
-      localStorage.setItem("token", response.data.token);
+      // localStorage.setItem("token", response.data.token);
+      console.log(response.data.product);
       return response.data.product;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -29,7 +30,7 @@ export const getAllProducts = createAsyncThunk(
   "products/getAll",
   async (_, { rejectWithValue }) => {
     try {
-      setAuthHeader();
+      // setAuthHeader();
       const response = await axios.get(`${BASE_URL}/getallProducts`);
       return response.data;
     } catch (error) {
@@ -43,7 +44,7 @@ export const getProductById = createAsyncThunk(
   "products/getById",
   async (id, { rejectWithValue }) => {
     try {
-      setAuthHeader();
+      // setAuthHeader();
       const response = await axios.get(`${BASE_URL}/product/${id}`);
       return response.data.product;
     } catch (error) {
@@ -57,7 +58,7 @@ export const updateProduct = createAsyncThunk(
   "admin/updateProduct",
   async ({ id, credentials }, { rejectWithValue }) => {
     try {
-      setAuthHeader();
+      // setAuthHeader();
       const response = await axios.put(
         `${BASE_URL}/updateProduct/${id}`,
         credentials
@@ -74,9 +75,9 @@ export const deleteProduct = createAsyncThunk(
   "admin/deleteProduct",
   async (id, { rejectWithValue }) => {
     try {
-      setAuthHeader();
+      // setAuthHeader();
       const response = await axios.delete(`${BASE_URL}/deleteProduct/${id}`);
-      return response.data.message;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }

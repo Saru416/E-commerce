@@ -5,13 +5,13 @@ import { eq } from "drizzle-orm";
 
 // Add new Product
 export const addProduct = async (req: Request,res:Response) => {
-    const {name, price, category, sub_category, availableQuantity, description} = req.body;
+    const {name, price, category, availableQuantity, description} = req.body;
 
-    if(!name || !price || !category || !sub_category || !description || !availableQuantity){
+    if(!name || !price || !category || !description || !availableQuantity){
         res.status(400).json({message: "All fields Required!"})
     }
     try{
-        await db.insert(product).values({name,description,price,category,sub_category,availableQuantity});
+        await db.insert(product).values({name,description,price,category,availableQuantity});
         res.status(201).json({message: "Product Added"})
     } catch (error){
         console.error("Error adding product:", error);
@@ -57,7 +57,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         const productId = typeof id === 'string' ? parseInt(id, 10) : id;
 
         const updatedProduct = await db
-        .update(product).set({name,description,price,category,sub_category})
+        .update(product).set({name,description,price,category})
         .where(eq(product.id,productId))
         .returning();
 
@@ -73,15 +73,19 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 //DELECT a Product
 export const deleteProduct = async (req: Request, res: Response) => {
-    const {id} = req.params;
-    try{
-        const productId = typeof id === 'string' ? parseInt(id, 10) : id;
+    const { id } = req.params;
+    try {
+        const productId = parseInt(id, 10);
+        if (isNaN(productId)) {
+            res.status(400).json({ message: "Invalid product ID" });
+        }
 
-        await db.delete(product).where(eq(product.id,productId));
-        res.status(201).json({message: "Product Deleted"});
+        await db.delete(product).where(eq(product.id, productId));
+        res.status(200).json({ message: "Product Deleted" });
 
     } catch (error) {
-        console.error("Error fetching product:", error);
-        res.status(500).json("Server Error!")
+        console.error("Error deleting product:", error);
+        res.status(500).json({ message: "Server Error!" });
     }
-}
+};
+

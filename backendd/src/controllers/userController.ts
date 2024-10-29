@@ -1,5 +1,7 @@
 import { Request,Response } from "express";
-import { supabase } from "../services/supabase_services";
+//import { supabase } from "../services/supabase_services";
+import { supabase } from "../db/supabase-service";
+
 
 export const signUp  = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -7,10 +9,11 @@ export const signUp  = async (req: Request, res: Response) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
-        password,
+        password
       });
   
       if (error) {
+        console.log(error)
         res.status(400).json({ message: error.message });
       } else{
         res.status(201).json({ message: 'User signed up successfully!', data });

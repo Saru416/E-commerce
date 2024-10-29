@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-  addProduct,
-  getAllProducts,
-  getProductById,
-  updateProduct,
-  deleteProduct,
-} from "../../redux/slice/productSlice";
+import { addProduct, getAllProducts, deleteProduct } from "../../redux/slice/productSlice";
+import { addCategory, getallCategory, deleteCategory } from "../../redux/slice/categorySlice";
 
 function AdminDashboard() {
   const [option, setOption] = useState(0); // Default to 0 (dashboard view)
@@ -15,22 +10,40 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [products, setProducts] = useState([]);
+
   const [product, setProduct] = useState({
     name: "",
     price: "",
     category: "",
     availableQuantity: "",
+    description: "",
+  });
+
+  const [categories, setCategories] = useState([]);
+
+  const [category, setCategory] = useState({
+    name: "",
+    sub_category: "",
   });
 
   const handleAddProduct = (e) => {
-    e.preventDefault();
     const productData = {
       name: e.target.elements[0].value, // name input field
       price: e.target.elements[1].value, // price input field
       category: e.target.elements[2].value, // category input field
-      quantity: e.target.elements[3].value, // quantity input field
+      availableQuantity: e.target.elements[3].value, // quantity input field
+      description: e.target.elements[4].value,
     };
     dispatch(addProduct(productData));
+  };
+
+  const handleAddCategory = (e) => {
+    const CategoryData = {
+      name: e.target.elements[0].value,
+      sub_category: e.target.elements[1].value,
+    };
+    dispatch(addCategory(CategoryData));
   };
 
   const handleInputChange = (e) => {
@@ -41,8 +54,33 @@ function AdminDashboard() {
     });
   };
 
+  const handleDeleteProduct = (productId) => {
+    dispatch(deleteProduct(productId)).then(() => {
+      setProducts(products.filter((product) => product.id !== productId));
+    });
+  };
+
+  const handleDeleteCategory = (categoryId) => {
+    dispatch(deleteCategory(categoryId)).then(() => {
+      setCategories(categories.filter((category) => category.id !== categoryId));
+    });
+  };
+
+  const handleCategoryInputChange = (e) => {
+    const { name, value } = e.target;
+    setCategory({
+      ...category,
+      [name]: value,
+    });
+  };
+
   useEffect(() => {
-    dispatch(getAllProducts()).then((response) => setProduct(response.payload));
+    dispatch(getAllProducts()).then((response) =>
+      setProducts(response.payload)
+    );
+    dispatch(getallCategory()).then((response) =>
+      setCategories(response.payload)
+    );
   }, [dispatch]);
 
   const handlelogout = () => {
@@ -63,9 +101,24 @@ function AdminDashboard() {
                 </h3>
                 <h1 className="text-9xl mt-12 text-center">0</h1>
               </div>
-              <div className="bg-yellow-200 w-[26rem] h-[20rem] rounded-3xl flex mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105"></div>
-              <div className="bg-blue-200 w-[26rem] h-[20rem] rounded-3xl flex mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105"></div>
-              <div className="bg-green-200 w-[26rem] h-[20rem] rounded-3xl flex mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105"></div>
+              <div className="bg-yellow-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
+                <h3 className="mt-7 text-xl text-center">
+                  Total Products
+                </h3>
+                <h1 className="text-9xl mt-12 text-center">3</h1>
+              </div>
+              <div className="bg-blue-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
+                <h3 className="mt-7 text-xl text-center">
+                  Total Category
+                </h3>
+                <h1 className="text-9xl mt-12 text-center">2</h1>
+              </div>
+              <div className="bg-green-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
+                <h3 className="mt-7 text-xl text-center">
+                  Orders
+                </h3>
+                <h1 className="text-9xl mt-12 text-center">1</h1>
+              </div>
             </div>
           </>
         );
@@ -147,7 +200,7 @@ function AdminDashboard() {
               <label className="mb-2">Category</label>
               <input
                 className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
-                type="text"
+                type="number"
                 name="category"
                 value={product.category}
                 onChange={handleInputChange}
@@ -156,12 +209,20 @@ function AdminDashboard() {
               <input
                 className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
                 type="number"
-                name="quantity"
-                value={product.quantity}
+                name="availableQuantity"
+                value={product.availableQuantity}
+                onChange={handleInputChange}
+              />
+              <label className="mb-2">Description</label>
+              <input
+                className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
+                type="text"
+                name="description"
+                value={product.description}
                 onChange={handleInputChange}
               />
               <button
-                className="bg-blue-400 w-1/12 rounded-2xl p-2 ml-16 mb-3"
+                className="bg-blue-400 w-1/12 rounded-2xl p-2 ml-12 mb-3"
                 type="submit"
               >
                 Add
@@ -188,15 +249,23 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {product.map((product) => (
-                  <tr key={product.id}>
-                    <td className="border border-gray-300 px-6 py-4">{product.name}</td>
-                    <td className="border border-gray-300 px-6 py-4">{product.price}</td>
-                    <td className="border border-gray-300 px-6 py-4">{product.category}</td>
-                    <td className="border border-gray-300 px-6 py-4">{product.availableQuantity}</td>
+                {products.map((pro) => (
+                  <tr key={pro.id}>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {pro.name}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {pro.price}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {pro.category}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {pro.availableQuantity}
+                    </td>
                     <td className="border border-gray-300 px-6 py-4">
                       <button className="mr-3">Edit</button>
-                      <button>Delete</button>
+                      <button onClick={() => handleDeleteProduct(pro.id)}>Delete</button>
                     </td>
                   </tr>
                 ))}
@@ -216,11 +285,26 @@ function AdminDashboard() {
           <div>
             <h1 className="text-center text-3xl font-serif mb-10">CATEGORY</h1>
             <h4 className="text-xl mt-10">Add New Category</h4>
-            <form className="mt-7 flex flex-row ml-10 items-center mb-10">
+            <form
+              className="mt-7 flex flex-row ml-10 items-center mb-10"
+              onSubmit={handleAddCategory}
+            >
               <label className="mb-2">Name</label>
-              <input className="w-1/5 p-3 mb-4 ml-5 rounded-lg" type="text" />
+              <input
+                className="w-1/5 p-3 mb-4 ml-5 rounded-lg"
+                type="text"
+                name="name"
+                value={category.name}
+                onChange={handleCategoryInputChange}
+              />
               <label className="mb-2 ml-10">Subcategory</label>
-              <input className="w-1/5 p-3 mb-4 ml-5 rounded-lg" type="text" />
+              <input
+                className="w-1/5 p-3 mb-4 ml-5 rounded-lg"
+                type="text"
+                name="sub_category"
+                value={category.sub_category}
+                onChange={handleCategoryInputChange}
+              />
               <button className="bg-blue-500 rounded-2xl pb-2 pt-2 ml-10 px-8">
                 Add
               </button>
@@ -228,6 +312,9 @@ function AdminDashboard() {
             <table className="min-w-full table-auto border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-200">
+                  <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
+                    ID
+                  </th>
                   <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
                     Name
                   </th>
@@ -240,42 +327,23 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="border border-gray-300 px-6 py-4 text-gray-800">
-                    Shirt
-                  </td>
-                  <td className="border border-gray-300 px-6 py-4 text-gray-800">
-                    Baggy, Fit
-                  </td>
-                  <td className="border border-gray-300 px-6 py-3 text-left text-lg font-medium">
-                    <button className="mr-10">Edit</button>
-                    <button>Delete</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-6 py-4 text-gray-800">
-                    Pant
-                  </td>
-                  <td className="border border-gray-300 px-6 py-4 text-gray-800">
-                    Baggy, loose, skinny-fit
-                  </td>
-                  <td className="border border-gray-300 px-6 py-3 text-left text-lg font-medium">
-                    <button className="mr-10">Edit</button>
-                    <button>Delete</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-6 py-4 text-gray-800">
-                    T-shirt
-                  </td>
-                  <td className="border border-gray-300 px-6 py-4 text-gray-800">
-                    Over-sized, straight-fit
-                  </td>
-                  <td className="border border-gray-300 px-6 py-3 text-left text-lg font-medium">
-                    <button className="mr-10">Edit</button>
-                    <button>Delete</button>
-                  </td>
-                </tr>
+                {categories.map((cate) => (
+                  <tr key={cate.id}>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {cate.id}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {cate.name}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {cate.sub_category}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      <button className="mr-3">Edit</button>
+                      <button onClick={() => handleDeleteCategory(cate.id)}>Delete</button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

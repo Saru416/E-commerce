@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cart = exports.Orderitem = exports.order = exports.product = exports.user = void 0;
+exports.cart = exports.Orderitem = exports.order = exports.product = exports.category = exports.user = void 0;
 const pg_core_1 = require("drizzle-orm/pg-core");
 exports.user = (0, pg_core_1.pgTable)('user', {
     id: (0, pg_core_1.serial)('id').primaryKey(),
@@ -8,13 +8,19 @@ exports.user = (0, pg_core_1.pgTable)('user', {
     email: (0, pg_core_1.text)('email').notNull().unique(),
     password: (0, pg_core_1.text)('password').notNull()
 });
+exports.category = (0, pg_core_1.pgTable)('category', {
+    id: (0, pg_core_1.serial)('id').primaryKey(),
+    name: (0, pg_core_1.text)('name').notNull(),
+    sub_category: (0, pg_core_1.text)('sub_category').notNull()
+});
 exports.product = (0, pg_core_1.pgTable)('products', {
     id: (0, pg_core_1.serial)('id').primaryKey(),
     name: (0, pg_core_1.text)('name').notNull(),
     description: (0, pg_core_1.text)('description').notNull(),
     price: (0, pg_core_1.integer)('price'),
-    category: (0, pg_core_1.text)('category').notNull(),
-    sub_category: (0, pg_core_1.text)('sub_category').notNull(),
+    category: (0, pg_core_1.integer)('category')
+        .notNull()
+        .references(() => exports.category.id, { onDelete: 'cascade' }),
     availableQuantity: (0, pg_core_1.integer)('availableQuantity'),
     inStock: (0, pg_core_1.boolean)('inStock').default(false),
     createdAt: (0, pg_core_1.timestamp)('created_at').notNull().defaultNow(),
