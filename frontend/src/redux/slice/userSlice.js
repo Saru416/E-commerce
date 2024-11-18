@@ -10,9 +10,13 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(`${BASE_URL}/login`, credentials);
       axios.defaults.headers.common[
         "Authorization"
-      ] = `Bearer ${response.data.token}`;
-      localStorage.setItem("token", response.data.token);
-      return response.data.user;
+      ] = `Bearer ${response.data?.data.session?.access_token}`;
+      localStorage.setItem("token", response.data?.data.session?.access_token);
+      // console.log(response.data.data.session.user.id);  ----> This is giving us the user id
+      return {
+        user: response.data?.data.session?.user,
+        access_token: response.data?.data.session?.access_token,
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
@@ -24,7 +28,7 @@ export const registerUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${BASE_URL}/signUp`, credentials);
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data?.data.session?.access_token);
       return response.data.user;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -48,8 +52,8 @@ export const fetchAllUsers = createAsyncThunk(
   "users/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BASE_URL}/getallUsers`);
-      return response.data;
+      const response = await axios.get(`${BASE_URL}/getallusers`);
+      return response.data.users;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
     }
@@ -83,7 +87,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
         state.loading = false;
         state.error = null;
@@ -119,7 +123,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchAllUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.error.message;
       });
     builder
       .addCase(fetchUser.pending, (state) => {
@@ -138,6 +142,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logoutUse, clearError } = authSlice.actions;
+export const { logoutUser, clearError } = authSlice.actions;
 
 export default authSlice.reducer;

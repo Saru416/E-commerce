@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import myVideo from "../../assets/video.mp4"; // Correct import statement
 import Navbar from "../Navbar/navbar";
+import phone from "../../assets/phone.jpg";
 
 const HomePage = () => {
-
   return (
     <>
       <Navbar></Navbar>
@@ -49,13 +49,18 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="h-[32rem] bg-black">
-        <h2 className="text-white pt-32 pl-32 text-2xl bold">
-          Get Upto 20% Discount!
-        </h2>
-        <p className="text-white pl-32 pt-5">
-          Shop now and win rewards <br></br>for future purchases..
-        </p>
+      <div className="h-[32rem] bg-black flex flex-row justify-between">
+        <div>
+          <h2 className="text-white pt-32 pl-32 text-2xl bold">
+            Get Upto 20% Discount!
+          </h2>
+          <p className="text-white pl-32 pt-5">
+            Shop now and win rewards <br></br>for future purchases..
+          </p>
+        </div>
+        <div>
+          <img src={phone} alt="phone photo"></img>
+        </div>
       </div>
       <div className="h-[36rem] mt-14 flex flex-col items-center">
         <h2 className="text-3xl mb-12 mt-5">TRENDING</h2>{" "}
@@ -115,6 +120,6 @@ const HomePage = () => {
       <div className="h-14"></div>
     </>
   );
-}
+};
 
 export default HomePage;

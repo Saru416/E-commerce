@@ -7,8 +7,15 @@ import Login from "./components/Login/login"; // Your Login component
 import SignUp from "./components/SIgnup/signup";
 import AdminDashboard from "./components/Admin/adminDashboard";
 import AdminLogin from "./components/Admin/adminlogin";
+import Collections from "./components/Collections/collections";
+import withAuth from "./Routes/ProtectedRoute";
+import Cart from "./components/Cart/cart";
 
-function App() {
+const ProtectedHomePage = withAuth(HomePage);
+const ProtectedAdminDashboard = withAuth(AdminDashboard);
+const ProtectedCollections = withAuth(Collections);
+
+const App = () => {
   return (
     <Router>
       <Routes>
@@ -17,6 +24,8 @@ function App() {
         <Route path="/signup" element= {<SignUp/>} />
         <Route path='/adminDashboard' element= {<AdminDashboard/>} />
         <Route path='/adminlogin' element= {<AdminLogin/>} />
+        <Route path='/collections' element={<ProtectedCollections/>}/>
+        <Route path='/cart' element={<Cart/>}/>
         {/* Other routes */}
       </Routes>
     </Router>

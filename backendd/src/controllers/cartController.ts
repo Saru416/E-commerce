@@ -17,7 +17,7 @@ export const getCart = async (req:Request,res: Response) => {
         //.where(eq(cart.userId,userId));
     
         if (cartItems.length === 0) {
-          return res.status(204).send();
+          res.status(204).send();
         }
     
         res.status(200).json({
@@ -54,6 +54,7 @@ export const addToCart = async (req:Request, res: Response) => {
 
         res.status(201).json({ message: 'Product added to cart successfully' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({message: "Server Error"})
     }
 }

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3200/admin";
+const BASE_URL = "http://localhost:3000/admin";
 
 export const addCategory = createAsyncThunk("admin/addCategory",async (details, {rejectWithValue}) => {
     try {

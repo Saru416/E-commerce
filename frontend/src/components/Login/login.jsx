@@ -17,7 +17,6 @@ const Login = () => {
   const handlesubmit = async (e) => {
     e.preventDefault();
     const response = await dispatch(loginUser({email, password}));
-    console.log(response);
     if (response.type === 'auth/login/fulfilled') {
       navigate('/'); // Navigate only on successful login
     } else {

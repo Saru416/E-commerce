@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3200/user";
+const BASE_URL = "http://localhost:3000/user";
 
 // const setAuthHeader = () => {
 //   const token = localStorage.getItem("token");

@@ -1,11 +1,11 @@
-import { boolean, date, integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, date, integer, pgTable, serial, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
-export const user = pgTable('user', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  email: text('email').notNull().unique(),
-  password: text('password').notNull()
-});
+// export const user = pgTable('user', {
+//   id: serial('id').primaryKey(),
+//   name: text('name').notNull(),
+//   email: text('email').notNull().unique(),
+//   password: text('password').notNull()
+// });
 
 export const category = pgTable('category', {
   id: serial('id').primaryKey(), 
@@ -32,9 +32,7 @@ export const product = pgTable('products', {
 export const order = pgTable('order',{
     id: serial('id').primaryKey(),
     order_date: date('order_date'),
-    user_id: integer('user_id')
-    .notNull()
-    .references(() => user.id, {onDelete: 'cascade'}),
+    user_id: uuid('user_id').notNull(),
     total_amount: integer('total_amount')
 });
 
@@ -52,13 +50,10 @@ export const Orderitem = pgTable('Orderitem',{
 
 export const cart = pgTable('cart', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').notNull().references(() => user.id),
+  userId: uuid('user_id').notNull(),
   productId: integer('product_id').notNull().references(() => product.id),
   quantity: integer('quantity').notNull(),
 });
-
-export type InsertUser = typeof user.$inferInsert;
-export type SelectUser = typeof user.$inferSelect;
 
 export type InsertPro = typeof product.$inferInsert;
 export type SelectPro = typeof product.$inferSelect;

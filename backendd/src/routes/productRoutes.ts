@@ -1,5 +1,6 @@
 import express from "express";
 import { addProduct,getAllProducts,getProductById,deleteProduct, updateProduct } from "../controllers/productController";
+// import {authenticateUser} from '../middleware/authorization'
 
 const router = express.Router();
 

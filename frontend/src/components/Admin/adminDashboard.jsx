@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addProduct, getAllProducts, deleteProduct } from "../../redux/slice/productSlice";
 import { addCategory, getallCategory, deleteCategory } from "../../redux/slice/categorySlice";
+import { fetchAllUsers } from "../../redux/slice/userSlice";
 
 function AdminDashboard() {
   const [option, setOption] = useState(0); // Default to 0 (dashboard view)
@@ -11,6 +12,8 @@ function AdminDashboard() {
   const dispatch = useDispatch();
 
   const [products, setProducts] = useState([]);
+
+  const [users,setUsers] = useState([]);
 
   const [product, setProduct] = useState({
     name: "",
@@ -81,6 +84,9 @@ function AdminDashboard() {
     dispatch(getallCategory()).then((response) =>
       setCategories(response.payload)
     );
+    dispatch(fetchAllUsers()).then((response) =>
+      setUsers(response.payload)
+    );
   }, [dispatch]);
 
   const handlelogout = () => {
@@ -99,25 +105,25 @@ function AdminDashboard() {
                 <h3 className="mt-7 text-xl text-center">
                   Total Number of Users
                 </h3>
-                <h1 className="text-9xl mt-12 text-center">0</h1>
+                <h1 className="text-9xl mt-12 text-center">{users.length}</h1>
               </div>
               <div className="bg-yellow-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
                 <h3 className="mt-7 text-xl text-center">
                   Total Products
                 </h3>
-                <h1 className="text-9xl mt-12 text-center">3</h1>
+                <h1 className="text-9xl mt-12 text-center">{products.length}</h1>
               </div>
               <div className="bg-blue-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
                 <h3 className="mt-7 text-xl text-center">
                   Total Category
                 </h3>
-                <h1 className="text-9xl mt-12 text-center">2</h1>
+                <h1 className="text-9xl mt-12 text-center">{categories.length}</h1>
               </div>
               <div className="bg-green-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
                 <h3 className="mt-7 text-xl text-center">
                   Orders
                 </h3>
-                <h1 className="text-9xl mt-12 text-center">1</h1>
+                <h1 className="text-9xl mt-12 text-center">0</h1>
               </div>
             </div>
           </>
@@ -133,41 +139,28 @@ function AdminDashboard() {
                     ID
                   </th>
                   <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
-                    Name
-                  </th>
-                  <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
-                    Age
-                  </th>
-                  <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
                     email
+                  </th>
+                  <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
+                    Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="border border-gray-300 px-6 py-4">1</td>
-                  <td className="border border-gray-300 px-6 py-4">Anom</td>
-                  <td className="border border-gray-300 px-6 py-4">19</td>
-                  <td className="border border-gray-300 px-6 py-4">
-                    xyz@example.com
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-6 py-4">2</td>
-                  <td className="border border-gray-300 px-6 py-4">Megha</td>
-                  <td className="border border-gray-300 px-6 py-4">19</td>
-                  <td className="border border-gray-300 px-6 py-4">
-                    abc@hello.com
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-6 py-4">3</td>
-                  <td className="border border-gray-300 px-6 py-4">Subham</td>
-                  <td className="border border-gray-300 px-6 py-4">25</td>
-                  <td className="border border-gray-300 px-6 py-4">
-                    mike@john.com
-                  </td>
-                </tr>
+                {Array.isArray(users) && users.map((user) => (
+                  <tr key={user.id}>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {user.id}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      {user.email}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
+                      <button className="mr-3">Edit</button>
+                      <button>Delete</button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

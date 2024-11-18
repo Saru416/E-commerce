@@ -26,7 +26,7 @@ const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .innerJoin(schema_2.product, (0, drizzle_orm_1.eq)(schema_1.cart.productId, schema_2.product.id));
         //.where(eq(cart.userId,userId));
         if (cartItems.length === 0) {
-            return res.status(204).send();
+            res.status(204).send();
         }
         res.status(200).json({
             message: 'Cart retrieved successfully',
@@ -61,6 +61,7 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(201).json({ message: 'Product added to cart successfully' });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Server Error" });
     }
 });
