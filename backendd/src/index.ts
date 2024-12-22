@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import cors from 'cors';
 import userRouters from "./routes/userRoutes";
 import productRouters from "./routes/productRoutes";
@@ -11,6 +12,7 @@ const PORT = 3000;
 app.use(express.json())
 
 app.use(cors())
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use('/user',userRouters);
 app.use('/user',productRouters);

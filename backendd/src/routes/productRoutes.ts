@@ -1,10 +1,10 @@
 import express from "express";
-import { addProduct,getAllProducts,getProductById,deleteProduct, updateProduct } from "../controllers/productController";
+import { addProduct,getAllProducts,getProductById,deleteProduct, updateProduct, uploadMiddleware } from "../controllers/productController";
 // import {authenticateUser} from '../middleware/authorization'
 
 const router = express.Router();
 
-router.post('/addProduct',addProduct);
+router.post('/addProduct',uploadMiddleware, addProduct);
 router.get('/getallProducts',getAllProducts);
 router.get('/product/:id',getProductById);
 router.put('/updateProduct/:id',updateProduct);

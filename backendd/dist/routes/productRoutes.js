@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const productController_1 = require("../controllers/productController");
 // import {authenticateUser} from '../middleware/authorization'
 const router = express_1.default.Router();
-router.post('/addProduct', productController_1.addProduct);
+router.post('/addProduct', productController_1.uploadMiddleware, productController_1.addProduct);
 router.get('/getallProducts', productController_1.getAllProducts);
 router.get('/product/:id', productController_1.getProductById);
 router.put('/updateProduct/:id', productController_1.updateProduct);

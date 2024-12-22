@@ -8,5 +8,5 @@ const cartController_1 = require("../controllers/cartController");
 const router = express_1.default.Router();
 router.get('/getCart', cartController_1.getCart);
 router.post('/addtoCart', cartController_1.addToCart);
-router.delete('/deleteItemCart', cartController_1.deleteItemCart);
+router.delete('/deleteItemCart/:id', cartController_1.deleteItemCart);
 exports.default = router;

@@ -23,6 +23,7 @@ export const product = pgTable('products', {
     .references(() => category.id, {onDelete: 'cascade'}),
   availableQuantity: integer('availableQuantity'),
   inStock: boolean('inStock').default(false),
+  imageUrl: text('image').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()

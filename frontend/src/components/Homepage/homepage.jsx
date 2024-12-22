@@ -2,8 +2,23 @@ import React from "react";
 import myVideo from "../../assets/video.mp4"; // Correct import statement
 import Navbar from "../Navbar/navbar";
 import phone from "../../assets/phone.jpg";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
+
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const handleExplore = () => {
+    if(isAuthenticated === true){
+      navigate('collections');
+    }
+    else{
+      navigate('/login');
+    }
+  }
+
   return (
     <>
       <Navbar></Navbar>
@@ -57,6 +72,7 @@ const HomePage = () => {
           <p className="text-white pl-32 pt-5">
             Shop now and win rewards <br></br>for future purchases..
           </p>
+          <button className="text-white bg-green-500 p-3 rounded-xl ml-32 mt-3" onClick={handleExplore}> Explore!</button>
         </div>
         <div>
           <img src={phone} alt="phone photo"></img>

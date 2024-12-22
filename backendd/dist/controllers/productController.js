@@ -8,19 +8,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.addProduct = void 0;
+exports.uploadMiddleware = exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.addProduct = void 0;
 const schema_1 = require("../db/schema");
 const db_1 = require("../db/db");
+const multer_1 = __importDefault(require("multer"));
 const drizzle_orm_1 = require("drizzle-orm");
+const storage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "./uploads");
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    },
+});
+const upload = (0, multer_1.default)({ storage });
 // Add new Product
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, price, category, availableQuantity, description } = req.body;
-    if (!name || !price || !category || !description || !availableQuantity) {
+    const image_url = req.file;
+    if (!name || !price || !category || !description || !availableQuantity || !image_url) {
         res.status(400).json({ message: "All fields Required!" });
+        console.log(image_url);
     }
     try {
-        yield db_1.db.insert(schema_1.product).values({ name, description, price, category, availableQuantity });
+        if (image_url !== undefined)
+            yield db_1.db.insert(schema_1.product).values({ name, description, price, category, availableQuantity, imageUrl: `/uploads/${image_url.filename}` });
         res.status(201).json({ message: "Product Added" });
     }
     catch (error) {
@@ -61,15 +77,15 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getProductById = getProductById;
 // Update Product
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, price, category, sub_category, description } = req.body;
+    const { name, price, category, availableQuantity, description } = req.body;
     const { id } = req.params;
     try {
         const productId = typeof id === 'string' ? parseInt(id, 10) : id;
         const updatedProduct = yield db_1.db
-            .update(schema_1.product).set({ name, description, price, category })
+            .update(schema_1.product).set({ name, description, price, availableQuantity, category })
             .where((0, drizzle_orm_1.eq)(schema_1.product.id, productId))
             .returning();
-        if (exports.updateProduct.length === 0) {
+        if (updatedProduct.length === 0) {
             res.status(404).json({ message: 'Product not Found' });
         }
         res.status(200).json({ message: "Product updated!" });
@@ -96,3 +112,4 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProduct = deleteProduct;
+exports.uploadMiddleware = upload.single("image");

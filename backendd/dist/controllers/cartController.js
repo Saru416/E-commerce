@@ -15,12 +15,12 @@ const db_1 = require("../db/db");
 const schema_2 = require("../db/schema");
 const drizzle_orm_1 = require("drizzle-orm");
 const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //const {userId} = req.body();
     try {
         const cartItems = yield db_1.db.select({
             productName: schema_2.product.name,
             quantity: schema_1.cart.quantity,
             productPrice: schema_2.product.price,
-            //totalPrice: db.raw(`cart.quantity * product.price`)
         })
             .from(schema_1.cart)
             .innerJoin(schema_2.product, (0, drizzle_orm_1.eq)(schema_1.cart.productId, schema_2.product.id));

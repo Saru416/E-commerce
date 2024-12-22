@@ -1,17 +1,33 @@
 import { Request, Response } from "express";
 import { product } from "../db/schema";
 import { db } from "../db/db";
+import multer from "multer";
+import path from "path";
 import { eq } from "drizzle-orm";
+
+const storage = multer.diskStorage({
+    destination: (req,file,cb)=> {
+        cb(null, "./uploads");
+    },
+    filename: (req, file, cb) => {
+        cb(null,Date.now() + '-'+ file.originalname);
+    },
+});
+
+const upload = multer({ storage });
 
 // Add new Product
 export const addProduct = async (req: Request,res:Response) => {
     const {name, price, category, availableQuantity, description} = req.body;
+    const image_url = req.file;
 
-    if(!name || !price || !category || !description || !availableQuantity){
+    if(!name || !price || !category || !description || !availableQuantity || !image_url){
         res.status(400).json({message: "All fields Required!"})
+        console.log(image_url)
     }
     try{
-        await db.insert(product).values({name,description,price,category,availableQuantity});
+        if(image_url !== undefined)
+        await db.insert(product).values({name,description,price,category,availableQuantity, imageUrl: `/uploads/${image_url.filename}`});
         res.status(201).json({message: "Product Added"})
     } catch (error){
         console.error("Error adding product:", error);
@@ -49,7 +65,7 @@ export const getProductById = async (req:Request, res:Response) => {
 
 // Update Product
 export const updateProduct = async (req: Request, res: Response) => {
-    const {name, price, category, sub_category, description} = req.body;
+    const {name, price, category, availableQuantity, description} = req.body;
 
     const { id } = req.params;
 
@@ -57,11 +73,11 @@ export const updateProduct = async (req: Request, res: Response) => {
         const productId = typeof id === 'string' ? parseInt(id, 10) : id;
 
         const updatedProduct = await db
-        .update(product).set({name,description,price,category})
+        .update(product).set({name,description,price,availableQuantity,category})
         .where(eq(product.id,productId))
         .returning();
 
-        if (updateProduct.length === 0){
+        if (updatedProduct.length === 0){
             res.status(404).json({message: 'Product not Found'})
         }
         res.status(200).json({message: "Product updated!"})
@@ -89,3 +105,4 @@ export const deleteProduct = async (req: Request, res: Response) => {
     }
 };
 
+export const uploadMiddleware = upload.single("image");

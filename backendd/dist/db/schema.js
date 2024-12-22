@@ -23,6 +23,7 @@ exports.product = (0, pg_core_1.pgTable)('products', {
         .references(() => exports.category.id, { onDelete: 'cascade' }),
     availableQuantity: (0, pg_core_1.integer)('availableQuantity'),
     inStock: (0, pg_core_1.boolean)('inStock').default(false),
+    imageUrl: (0, pg_core_1.text)('image').notNull(),
     createdAt: (0, pg_core_1.timestamp)('created_at').notNull().defaultNow(),
     updatedAt: (0, pg_core_1.timestamp)('updated_at')
         .notNull()

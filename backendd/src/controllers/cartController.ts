@@ -5,12 +5,13 @@ import { product } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 export const getCart = async (req:Request,res: Response) => {
+    //const {userId} = req.body();
+
     try {
         const cartItems = await db.select({
           productName: product.name,
           quantity: cart.quantity,
           productPrice: product.price,
-          //totalPrice: db.raw(`cart.quantity * product.price`)
         })
         .from(cart)
         .innerJoin(product, eq(cart.productId,product.id))
