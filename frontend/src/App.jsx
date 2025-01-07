@@ -14,8 +14,10 @@ import Cart from "./components/Cart/cart";
 const ProtectedHomePage = withAuth(HomePage);
 const ProtectedAdminDashboard = withAuth(AdminDashboard);
 const ProtectedCollections = withAuth(Collections);
+const ProtectedCart = withAuth(Cart);
 
 const App = () => {
+
   return (
     <Router>
       <Routes>
@@ -25,7 +27,7 @@ const App = () => {
         <Route path='/adminDashboard' element= {<AdminDashboard/>} />
         <Route path='/adminlogin' element= {<AdminLogin/>} />
         <Route path='/collections' element={<ProtectedCollections/>}/>
-        <Route path='/cart' element={<Cart/>}/>
+        <Route path='/cart' element={<ProtectedCart/>}/>
         {/* Other routes */}
       </Routes>
     </Router>

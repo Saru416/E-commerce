@@ -40,8 +40,8 @@ export const fetchUser = createAsyncThunk(
   "user/fetch",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${BASE_URL}/getuser`);
-      return response.data;
+      const response = await axios.get(`${BASE_URL}/getuser`, {withCredentials: true});
+      return response.data.user.id;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
     }
@@ -70,6 +70,10 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
+    setAuthState(state, action) {
+      state.user = action.payload.user;
+      state.isAuthenticated = action.payload.isAuthenticated;
+    },
     logoutUser: (state) => {
       state.user = null;
       state.isAuthenticated = false;
@@ -142,6 +146,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logoutUser, clearError } = authSlice.actions;
+export const { logoutUser, clearError, setAuthState } = authSlice.actions;
 
 export default authSlice.reducer;

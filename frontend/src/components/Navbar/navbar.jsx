@@ -8,6 +8,9 @@ const Navbar = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const handleLogin = () => {
+    // localStorage.setItem("isAuthenticated", "true");
+    // localStorage.setItem("user", JSON.stringify(userData));
+    // dispatch(setAuthState({ user: userData, isAuthenticated: true }));
     navigate("/login");
   };
 
@@ -16,8 +19,15 @@ const Navbar = () => {
   };
 
   const handleSigout = () => {
+    // localStorage.removeItem("isAuthenticated");
+    // localStorage.removeItem("user");
+    // dispatch(setAuthState({ user: null, isAuthenticated: false }));
     navigate("/login");
   };
+
+  const handleCart = () => {
+    navigate("/cart")
+  }
 
   const toggleSearch = () => {
     setShowSearch((prevState) => !prevState); // Toggle the search bar visibility
@@ -47,7 +57,7 @@ const Navbar = () => {
         <button className="pl-4" onClick={toggleSearch}>
           Search
         </button>
-        <button className="pl-4">Cart</button>
+        <button className="pl-4" onClick={handleCart}>Cart</button>
         {isAuthenticated ? (
           <button className="pl-4" onClick={handleSigout}>
             SignOut

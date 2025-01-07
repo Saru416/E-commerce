@@ -16,6 +16,7 @@ const Collections = () => {
   
   const handleAddToCart = (productId) => {
     if (user) {
+      console.log(user);
       const quantity = 1;
       dispatch(addtoCart({ userId: user.id, productId, quantity }));
     } else {

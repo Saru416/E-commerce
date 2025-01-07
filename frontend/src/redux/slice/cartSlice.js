@@ -3,7 +3,7 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:3000/user"
 
-export const addtoCart = createAsyncThunk("users/addToCart", async (details, {rejectWithValue}) => {
+export const addtoCart = createAsyncThunk("user/addToCart", async (details, {rejectWithValue}) => {
     try {
         const response = await axios.post(`${BASE_URL}/addtoCart`,details);
         localStorage.setItem("token", response.data.token);
@@ -13,16 +13,17 @@ export const addtoCart = createAsyncThunk("users/addToCart", async (details, {re
     }
 });
 
-export const getCart = createAsyncThunk('users/getCart',async (_,{rejectWithValue}) => {
+export const getCart = createAsyncThunk('user/getCart',async (userId,{rejectWithValue}) => {
     try {
-        const response = await axios.get(`${BASE_URL}/getCart`);
-        return response.data;
+        const response = await axios.get(`${BASE_URL}/getCart/${userId}`, );
+        console.log(response.data)
+        return response.data.data;
     } catch (error) {
         return rejectWithValue(error.message);
     }
 });
 
-export const deleteCartItem = createAsyncThunk('users/deleteCart',async(id,{rejectWithValue}) => {
+export const deleteCartItem = createAsyncThunk('user/deleteCart',async(id,{rejectWithValue}) => {
     try {
         const response = await axios.delete(`${BASE_URL}/deleteItemCart/${id}`);
         return response.data;

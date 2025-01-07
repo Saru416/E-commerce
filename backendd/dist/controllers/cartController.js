@@ -15,7 +15,7 @@ const db_1 = require("../db/db");
 const schema_2 = require("../db/schema");
 const drizzle_orm_1 = require("drizzle-orm");
 const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //const {userId} = req.body();
+    const { userId } = req.body;
     try {
         const cartItems = yield db_1.db.select({
             productName: schema_2.product.name,
@@ -23,10 +23,10 @@ const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             productPrice: schema_2.product.price,
         })
             .from(schema_1.cart)
-            .innerJoin(schema_2.product, (0, drizzle_orm_1.eq)(schema_1.cart.productId, schema_2.product.id));
-        //.where(eq(cart.userId,userId));
+            .innerJoin(schema_2.product, (0, drizzle_orm_1.eq)(schema_1.cart.productId, schema_2.product.id))
+            .where((0, drizzle_orm_1.eq)(schema_1.cart.userId, userId));
         if (cartItems.length === 0) {
-            res.status(204).send();
+            res.status(204).json("Not Found!");
         }
         res.status(200).json({
             message: 'Cart retrieved successfully',
@@ -50,6 +50,7 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             yield db_1.db.update(schema_1.cart).set({ quantity: existingcartItem[0].quantity + quantity })
                 .where((0, drizzle_orm_1.eq)(schema_1.cart.userId, userId) && (0, drizzle_orm_1.eq)(schema_1.cart.productId, productId));
             res.status(200).json({ message: 'Cart updated successfully' });
+            return;
         }
         else {
             yield db_1.db.insert(schema_1.cart).values({

@@ -5,7 +5,7 @@ import { product } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 export const getCart = async (req:Request,res: Response) => {
-    //const {userId} = req.body();
+    const {userId} = req.params;
 
     try {
         const cartItems = await db.select({
@@ -15,10 +15,10 @@ export const getCart = async (req:Request,res: Response) => {
         })
         .from(cart)
         .innerJoin(product, eq(cart.productId,product.id))
-        //.where(eq(cart.userId,userId));
+        .where(eq(cart.userId,userId));
     
         if (cartItems.length === 0) {
-          res.status(204).send();
+          res.status(204).json("Not Found!");
         }
     
         res.status(200).json({
@@ -26,7 +26,7 @@ export const getCart = async (req:Request,res: Response) => {
           data: cartItems
         });
     
-      } catch (error) {
+  } catch (error) {
         res.status(500).json({ message: 'Server error', error });
       }
 }
@@ -45,6 +45,7 @@ export const addToCart = async (req:Request, res: Response) => {
             await db.update(cart).set({ quantity: existingcartItem[0].quantity + quantity })
               .where(eq(cart.userId, userId) && eq(cart.productId, productId));
             res.status(200).json({ message: 'Cart updated successfully' });
+            return
         } else {
             await db.insert(cart).values({
                 userId,
