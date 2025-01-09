@@ -6,18 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const HomePage = () => {
-
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const handleExplore = () => {
-    if(isAuthenticated === true){
-      navigate('collections');
+    if (isAuthenticated === true) {
+      navigate("collections");
+    } else {
+      navigate("/login");
     }
-    else{
-      navigate('/login');
-    }
-  }
+  };
 
   return (
     <>
@@ -49,16 +47,36 @@ const HomePage = () => {
         <h2 className="text-3xl mb-12">CATEGORY</h2>
         {/* Flex container for the cards with space between them */}
         <div className="flex space-x-8">
-          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer">
+          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer text-center">
+            <img
+              src="/t-shirt.webp"
+              alt="T-shirt"
+              className="h-full bg-none"
+            ></img>
             T-shirt
           </div>
-          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer">
+          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer text-center">
+            <img
+              src="/whiteshirt.avif"
+              alt="Shirt"
+              className="h-full bg-none"
+            ></img>
             Shirt
           </div>
-          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer">
+          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer text-center">
+            <img
+              src="/black pant.webp"
+              alt="Pant"
+              className="h-full bg-none"
+            ></img>
             Pant
           </div>
-          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer">
+          <div className="bg-gray-200 p-8 rounded-lg shadow-md h-[26rem] w-80 transform transition duration-300 hover:scale-105 cursor-pointer text-center">
+            <img
+              src="/jacket.jpg"
+              alt="Jacket"
+              className="h-full bg-none"
+            ></img>
             Jackets
           </div>
         </div>
@@ -72,7 +90,13 @@ const HomePage = () => {
           <p className="text-white pl-32 pt-5">
             Shop now and win rewards <br></br>for future purchases..
           </p>
-          <button className="text-white bg-green-500 p-3 rounded-xl ml-32 mt-3" onClick={handleExplore}> Explore!</button>
+          <button
+            className="text-white bg-green-500 p-3 rounded-xl ml-32 mt-3"
+            onClick={handleExplore}
+          >
+            {" "}
+            Explore!
+          </button>
         </div>
         <div>
           <img src={phone} alt="phone photo"></img>
@@ -132,8 +156,55 @@ const HomePage = () => {
           </form>
         </div>
       </div>
-
-      <div className="h-14"></div>
+      <footer class="bg-gray-900 shadow dark:bg-gray-900">
+        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+          <div class="sm:flex sm:items-center sm:justify-between">
+            <a
+              href="localhost:5173"
+              class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+            >
+              <img
+                src="https://flowbite.com/docs/images/logo.svg"
+                class="h-8"
+                alt="Flowbite Logo"
+              />
+              <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                TWT
+              </span>
+            </a>
+            <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+              <li>
+                <a href="#" class="hover:underline me-4 md:me-6">
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline me-4 md:me-6">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline me-4 md:me-6">
+                  Licensing
+                </a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+          <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+          <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+            © 2025{" "}
+            <a href="localhost:5173" class="hover:underline">
+              TWT™
+            </a>
+            . All Rights Reserved.
+          </span>
+        </div>
+      </footer>
     </>
   );
 };

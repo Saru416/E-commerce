@@ -19,6 +19,7 @@ export const getCart = async (req:Request,res: Response) => {
     
         if (cartItems.length === 0) {
           res.status(204).json("Not Found!");
+          return
         }
     
         res.status(200).json({
@@ -61,13 +62,24 @@ export const addToCart = async (req:Request, res: Response) => {
     }
 }
 
-export const deleteItemCart = async (id: number | string,req: Request, res: Response) => {
+export const deleteItemCart = async (req: Request, res: Response) => {
     try {
-        const productId = typeof id === 'string' ? parseInt(id, 10) : id;
-
-        await db.delete(cart).where(eq(cart.productId,productId));
-        res.status(201).json({message: "Item deleted from cart!"})
+      const { productId } = req.params; // Assuming productId is passed as a route parameter
+  
+      if (!productId) {
+        res.status(400).json({ message: "Product ID is required." });
+      }
+  
+      const parsedProductId = parseInt(productId, 10);
+      if (isNaN(parsedProductId)) {
+        res.status(400).json({ message: "Invalid Product ID format." });
+      }
+  
+      await db.delete(cart).where(eq(cart.productId, parsedProductId));
+  
+      res.status(200).json({ message: "Item deleted from cart!" });
     } catch (error) {
-        res.status(500).json({message: "Server Error!"})
+      console.error("Error deleting item from cart:", error);
+      res.status(500).json({ message: "Server Error!" });
     }
-}
+  };

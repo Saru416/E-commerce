@@ -29,6 +29,11 @@ const Navbar = () => {
     navigate("/cart")
   }
 
+  const handleHome = () => {
+    navigate("/")
+  }
+
+
   const toggleSearch = () => {
     setShowSearch((prevState) => !prevState); // Toggle the search bar visibility
   };
@@ -54,6 +59,7 @@ const Navbar = () => {
 
       <div className="basis-1/5 flex items-center justify-end">
         <button className="pl-4" onClick={handleNavi}>User</button>
+        <button className="pl-4" onClick={handleHome}>Home</button>
         <button className="pl-4" onClick={toggleSearch}>
           Search
         </button>

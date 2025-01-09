@@ -15,7 +15,7 @@ const db_1 = require("../db/db");
 const schema_2 = require("../db/schema");
 const drizzle_orm_1 = require("drizzle-orm");
 const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.body;
+    const { userId } = req.params;
     try {
         const cartItems = yield db_1.db.select({
             productName: schema_2.product.name,
@@ -27,6 +27,7 @@ const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .where((0, drizzle_orm_1.eq)(schema_1.cart.userId, userId));
         if (cartItems.length === 0) {
             res.status(204).json("Not Found!");
+            return;
         }
         res.status(200).json({
             message: 'Cart retrieved successfully',
@@ -67,13 +68,21 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addToCart = addToCart;
-const deleteItemCart = (id, req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteItemCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const productId = typeof id === 'string' ? parseInt(id, 10) : id;
-        yield db_1.db.delete(schema_1.cart).where((0, drizzle_orm_1.eq)(schema_1.cart.productId, productId));
-        res.status(201).json({ message: "Item deleted from cart!" });
+        const { productId } = req.params; // Assuming productId is passed as a route parameter
+        if (!productId) {
+            res.status(400).json({ message: "Product ID is required." });
+        }
+        const parsedProductId = parseInt(productId, 10);
+        if (isNaN(parsedProductId)) {
+            res.status(400).json({ message: "Invalid Product ID format." });
+        }
+        yield db_1.db.delete(schema_1.cart).where((0, drizzle_orm_1.eq)(schema_1.cart.productId, parsedProductId));
+        res.status(200).json({ message: "Item deleted from cart!" });
     }
     catch (error) {
+        console.error("Error deleting item from cart:", error);
         res.status(500).json({ message: "Server Error!" });
     }
 });
