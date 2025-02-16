@@ -75,7 +75,7 @@ const categorySlice = createSlice({
                 state.loading = false,
                 state.error = null
             })
-            .addCase(addCategory.rejected, (state) => {
+            .addCase(addCategory.rejected, (state, action) => {
                 state.error = action.payload,
                 state.loading = false
             });
@@ -103,7 +103,7 @@ const categorySlice = createSlice({
                 state.loading = false;
                 state.error = null;
             })
-            .addCase(getallCategory.rejected, (state) => {
+            .addCase(getallCategory.rejected, (state,action) => {
                 state.error = action.payload;
                 state.loading = false;
             });
@@ -120,7 +120,7 @@ const categorySlice = createSlice({
                 state.loading = false,
                 state.error = null
             })
-            .addCase(updateCategory.rejected, (state) => {
+            .addCase(updateCategory.rejected, (state, action) => {
                 state.error = action.payload,
                 state.loading = false
             });
@@ -134,7 +134,7 @@ const categorySlice = createSlice({
                 state.loading = false,
                 state.error = null
             })
-            .addCase(deleteCategory.rejected, (state) => {
+            .addCase(deleteCategory.rejected, (state, action) => {
                 state.error = action.payload,
                 state.loading = false
             });

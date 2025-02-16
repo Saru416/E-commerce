@@ -8,6 +8,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,7 +18,7 @@ const SignUp = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const response = await dispatch(registerUser({email, password}));
+    const response = await dispatch(registerUser({email, password, display_name: username}));
     console.log(response);
     if (response.type === 'auth/signup/fulfilled') {
       navigate('/');
@@ -38,7 +39,14 @@ const SignUp = () => {
         {/* Right section */}
         <div className="w-2/3 p-8 bg-yellow-50 rounded-r-3xl">
           <h1 className="text-center text-3xl font-serif">TWT</h1>
-          <form className="text-black mt-16" onSubmit={handleSignup}>
+          <form className="text-black mt-5" onSubmit={handleSignup}>
+            <label className="block mb-2">Username</label>
+            <input
+              className="w-full p-3 mb-4 border border-black rounded-3xl"
+              type="text"
+              value={username} 
+              onChange={(e) => setUsername(e.target.value)}
+            />
             <label className="block mb-2">Email</label>
             <input
               className="w-full p-3 mb-4 border border-black rounded-3xl"

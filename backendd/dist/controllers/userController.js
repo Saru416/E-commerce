@@ -13,11 +13,16 @@ exports.getAllusers = exports.getuser = exports.login = exports.signUp = void 0;
 //import { supabase } from "../services/supabase_services";
 const supabase_service_1 = require("../db/supabase-service");
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+    const { email, password, display_name } = req.body;
     try {
         const { data, error } = yield supabase_service_1.supabase.auth.signUp({
             email,
-            password
+            password,
+            options: {
+                data: {
+                    display_name, // Add custom metadata here
+                },
+            },
         });
         if (error) {
             console.log(error);

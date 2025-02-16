@@ -43,7 +43,7 @@ const HomePage = () => {
         </button>
       </div>
 
-      <div className="h-[36rem] mt-16 flex flex-col items-center" id="category">
+      <div className="h-[36rem] mt-24 flex flex-col items-center" id="category">
         <h2 className="text-3xl mb-12">CATEGORY</h2>
         {/* Flex container for the cards with space between them */}
         <div className="flex space-x-8">

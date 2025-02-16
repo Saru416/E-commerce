@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import UserImage from "../../assets/working.png"
 
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false); // State to control search bar visibility
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
 
   const handleLogin = () => {
     // localStorage.setItem("isAuthenticated", "true");
@@ -26,13 +28,12 @@ const Navbar = () => {
   };
 
   const handleCart = () => {
-    navigate("/cart")
-  }
+    navigate("/cart");
+  };
 
   const handleHome = () => {
-    navigate("/")
-  }
-
+    navigate("/");
+  };
 
   const toggleSearch = () => {
     setShowSearch((prevState) => !prevState); // Toggle the search bar visibility
@@ -44,8 +45,29 @@ const Navbar = () => {
 
   return (
     <div className="fixed top-0 w-full bg-white h-20 px-10 text-black items-center shadow-md z-50 flex justify-between">
-      <div className={`basis-1/5 ml-4 ${showSearch ? "hidden" : ""}`}>
-        <h1>MENU</h1>
+      <div
+        className={`basis-1/5 ml-4 flex items-center ${
+          showSearch ? "hidden" : ""
+        }`}
+      >
+        {isAuthenticated ? (
+          <div className="flex items-center">
+            {/* User Profile Picture */}
+            <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden mr-2">
+              <img
+                src={UserImage}
+                alt="User Avatar"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* User Display Name */}
+            <span className="text-lg font-semibold">
+              {user.user_metadata.display_name || "Guest"}
+            </span>
+          </div>
+        ) : (
+          <h1>MENU</h1>
+        )}
       </div>
 
       {/* Conditionally move "TWT" to the left or keep it centered */}
@@ -58,12 +80,18 @@ const Navbar = () => {
       </div>
 
       <div className="basis-1/5 flex items-center justify-end">
-        <button className="pl-4" onClick={handleNavi}>User</button>
-        <button className="pl-4" onClick={handleHome}>Home</button>
+        <button className="pl-4" onClick={handleNavi}>
+          User
+        </button>
+        <button className="pl-4" onClick={handleHome}>
+          Home
+        </button>
         <button className="pl-4" onClick={toggleSearch}>
           Search
         </button>
-        <button className="pl-4" onClick={handleCart}>Cart</button>
+        <button className="pl-4" onClick={handleCart}>
+          Cart
+        </button>
         {isAuthenticated ? (
           <button className="pl-4" onClick={handleSigout}>
             SignOut

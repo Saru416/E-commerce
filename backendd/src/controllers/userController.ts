@@ -4,12 +4,17 @@ import { supabase } from "../db/supabase-service";
 
 
 export const signUp  = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    const { email, password, display_name } = req.body;
   
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
-        password
+        password,
+        options: {
+          data: {
+              display_name, // Add custom metadata here
+          },
+        },
       });
   
       if (error) {

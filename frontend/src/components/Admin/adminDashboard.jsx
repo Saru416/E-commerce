@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addProduct, getAllProducts, deleteProduct } from "../../redux/slice/productSlice";
-import { addCategory, getallCategory, deleteCategory } from "../../redux/slice/categorySlice";
+import {
+  addProduct,
+  getAllProducts,
+  deleteProduct,
+} from "../../redux/slice/productSlice";
+import {
+  addCategory,
+  getallCategory,
+  deleteCategory,
+} from "../../redux/slice/categorySlice";
 import { fetchAllUsers } from "../../redux/slice/userSlice";
 
 function AdminDashboard() {
@@ -13,7 +21,7 @@ function AdminDashboard() {
 
   const [products, setProducts] = useState([]);
 
-  const [users,setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const [product, setProduct] = useState({
     name: "",
@@ -57,6 +65,12 @@ function AdminDashboard() {
     });
   };
 
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setProduct((prev) => ({ ...prev, imageUrl: file }));
+  // };
+  
+
   const handleDeleteProduct = (productId) => {
     dispatch(deleteProduct(productId)).then(() => {
       setProducts(products.filter((product) => product.id !== productId));
@@ -65,7 +79,9 @@ function AdminDashboard() {
 
   const handleDeleteCategory = (categoryId) => {
     dispatch(deleteCategory(categoryId)).then(() => {
-      setCategories(categories.filter((category) => category.id !== categoryId));
+      setCategories(
+        categories.filter((category) => category.id !== categoryId)
+      );
     });
   };
 
@@ -84,9 +100,7 @@ function AdminDashboard() {
     dispatch(getallCategory()).then((response) =>
       setCategories(response.payload)
     );
-    dispatch(fetchAllUsers()).then((response) =>
-      setUsers(response.payload)
-    );
+    dispatch(fetchAllUsers()).then((response) => setUsers(response.payload));
   }, [dispatch]);
 
   const handlelogout = () => {
@@ -105,24 +119,22 @@ function AdminDashboard() {
                 <h3 className="mt-7 text-xl text-center">
                   Total Number of Users
                 </h3>
-                <h1 className="text-9xl mt-12 text-center">{users.length}</h1>
+                <h1 className="text-9xl mt-12 text-center">{users ? users.length : 0}</h1>
               </div>
               <div className="bg-yellow-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
-                <h3 className="mt-7 text-xl text-center">
-                  Total Products
-                </h3>
-                <h1 className="text-9xl mt-12 text-center">{products.length}</h1>
+                <h3 className="mt-7 text-xl text-center">Total Products</h3>
+                <h1 className="text-9xl mt-12 text-center">
+                  {products.length}
+                </h1>
               </div>
               <div className="bg-blue-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
-                <h3 className="mt-7 text-xl text-center">
-                  Total Category
-                </h3>
-                <h1 className="text-9xl mt-12 text-center">{categories.length}</h1>
+                <h3 className="mt-7 text-xl text-center">Total Category</h3>
+                <h1 className="text-9xl mt-12 text-center">
+                  {categories.length}
+                </h1>
               </div>
               <div className="bg-green-200 w-[26rem] h-[20rem] rounded-3xl flex flex-col mt-10 ml-20 shadow-md transform transition duration-300 hover:scale-105">
-                <h3 className="mt-7 text-xl text-center">
-                  Orders
-                </h3>
+                <h3 className="mt-7 text-xl text-center">Orders</h3>
                 <h1 className="text-9xl mt-12 text-center">0</h1>
               </div>
             </div>
@@ -139,6 +151,9 @@ function AdminDashboard() {
                     ID
                   </th>
                   <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
+                    Username
+                  </th>
+                  <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
                     email
                   </th>
                   <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
@@ -147,20 +162,24 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(users) && users.map((user) => (
-                  <tr key={user.id}>
-                    <td className="border border-gray-300 px-6 py-4">
-                      {user.id}
-                    </td>
-                    <td className="border border-gray-300 px-6 py-4">
-                      {user.email}
-                    </td>
-                    <td className="border border-gray-300 px-6 py-4">
-                      <button className="mr-3">Edit</button>
-                      <button>Delete</button>
-                    </td>
-                  </tr>
-                ))}
+                {Array.isArray(users) &&
+                  users.map((user) => (
+                    <tr key={user.id}>
+                      <td className="border border-gray-300 px-6 py-4">
+                        {user.id}
+                      </td>
+                      <td className="border border-gray-300 px-6 py-4">
+                        {user.user_metadata.display_name}
+                      </td>
+                      <td className="border border-gray-300 px-6 py-4">
+                        {user.email}
+                      </td>
+                      <td className="border border-gray-300 px-6 py-4">
+                        <button className="mr-3">Edit</button>
+                        <button>Delete</button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -171,56 +190,79 @@ function AdminDashboard() {
             <h1 className="text-center text-3xl font-serif">PRODUCTS</h1>
             <h4 className="text-xl mt-10">Add New Product</h4>
             <form
-              className="mt-7 flex flex-row ml-10"
+              className="mt-7 grid grid-cols-2 gap-8"
               onSubmit={handleAddProduct}
             >
-              <label className="mb-2">Name</label>
-              <input
-                className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
-                type="text"
-                name="name"
-                value={product.name}
-                onChange={handleInputChange}
-              />
-              <label className="mb-2 ">Price</label>
-              <input
-                className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
-                type="number"
-                name="price"
-                value={product.price}
-                onChange={handleInputChange}
-              />
-              <label className="mb-2">Category</label>
-              <input
-                className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
-                type="number"
-                name="category"
-                value={product.category}
-                onChange={handleInputChange}
-              />
-              <label className="mb-2">Quantity</label>
-              <input
-                className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
-                type="number"
-                name="availableQuantity"
-                value={product.availableQuantity}
-                onChange={handleInputChange}
-              />
-              <label className="mb-2">Description</label>
-              <input
-                className="w-1/5 p-3 mb-4 ml-5 rounded-xl mr-3"
-                type="text"
-                name="description"
-                value={product.description}
-                onChange={handleInputChange}
-              />
-              <button
-                className="bg-blue-400 w-1/12 rounded-2xl p-2 ml-12 mb-3"
-                type="submit"
-              >
-                Add
-              </button>
+              {/* Left Side Fields */}
+              <div>
+                <label className="mb-2 block">Name</label>
+                <input
+                  className="w-full p-3 mb-4 rounded-xl"
+                  type="text"
+                  name="name"
+                  value={product.name}
+                  onChange={handleInputChange}
+                />
+
+                <label className="mb-2 block">Price</label>
+                <input
+                  className="w-full p-3 mb-4 rounded-xl"
+                  type="number"
+                  name="price"
+                  value={product.price}
+                  onChange={handleInputChange}
+                />
+
+                <label className="mb-2 block">Category</label>
+                <input
+                  className="w-full p-3 mb-4 rounded-xl"
+                  type="text"
+                  name="category"
+                  value={product.category}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              {/* Right Side Fields */}
+              <div>
+                <label className="mb-2 block">Quantity</label>
+                <input
+                  className="w-full p-3 mb-4 rounded-xl"
+                  type="number"
+                  name="availableQuantity"
+                  value={product.availableQuantity}
+                  onChange={handleInputChange}
+                />
+
+                <label className="mb-2 block">Description</label>
+                <input
+                  className="w-full p-3 mb-4 rounded-xl"
+                  type="text"
+                  name="description"
+                  value={product.description}
+                  onChange={handleInputChange}
+                />
+
+                <label className="mb-2 block">Image</label>
+                <input
+                  className="w-full p-3 mb-4 rounded-xl"
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="col-span-2 flex justify-center">
+                <button
+                  className="bg-blue-400 w-1/6 rounded-2xl p-2"
+                  type="submit"
+                >
+                  Add
+                </button>
+              </div>
             </form>
+
             <table className="min-w-full table-auto border-collapse border border-gray-300 mt-7">
               <thead>
                 <tr className="bg-gray-200">
@@ -235,6 +277,9 @@ function AdminDashboard() {
                   </th>
                   <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
                     Quantity
+                  </th>
+                  <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
+                    Image
                   </th>
                   <th className="border border-gray-300 px-6 py-3 text-left text-lg font-medium text-gray-700">
                     Options
@@ -257,8 +302,17 @@ function AdminDashboard() {
                       {pro.availableQuantity}
                     </td>
                     <td className="border border-gray-300 px-6 py-4">
+                      {pro.imageUrl ? (
+                        pro.imageUrl
+                      ) : (
+                        "No Image"
+                      )}
+                    </td>
+                    <td className="border border-gray-300 px-6 py-4">
                       <button className="mr-3">Edit</button>
-                      <button onClick={() => handleDeleteProduct(pro.id)}>Delete</button>
+                      <button onClick={() => handleDeleteProduct(pro.id)}>
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -333,7 +387,9 @@ function AdminDashboard() {
                     </td>
                     <td className="border border-gray-300 px-6 py-4">
                       <button className="mr-3">Edit</button>
-                      <button onClick={() => handleDeleteCategory(cate.id)}>Delete</button>
+                      <button onClick={() => handleDeleteCategory(cate.id)}>
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

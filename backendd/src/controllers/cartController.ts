@@ -2,16 +2,18 @@ import { Request, Response } from "express";
 import { cart } from "../db/schema";
 import { db } from "../db/db";
 import { product } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export const getCart = async (req:Request,res: Response) => {
     const {userId} = req.params;
 
     try {
         const cartItems = await db.select({
+          productId: product.id,
           productName: product.name,
           quantity: cart.quantity,
           productPrice: product.price,
+          productImage: product.imageUrl
         })
         .from(cart)
         .innerJoin(product, eq(cart.productId,product.id))
@@ -32,35 +34,75 @@ export const getCart = async (req:Request,res: Response) => {
       }
 }
 
-export const addToCart = async (req:Request, res: Response) => {
-    const {userId, productId, quantity} = req.body;
-    try {
-        const req_product = await db.select().from(product).where(eq(product.id,productId));
+export const addToCart = async (req: Request, res: Response) => {
+  const { userId, productId, quantity } = req.body;
+  try {
+      // Check if the product exists
+      const req_product = await db.select().from(product).where(eq(product.id, productId));
+      if (req_product.length === 0) {
+          res.status(404).json({ message: "Product not found!" });
+          return
+      }
 
-        if(req_product.length === 0){
-            res.status(404).json({message: "Product not found!"})
-        }
+      console.log(userId);
 
-        const existingcartItem = await db.select().from(cart).where(eq(cart.userId, userId) && eq(cart.productId, productId)).limit(1)
-        if (existingcartItem.length > 0) {
-            await db.update(cart).set({ quantity: existingcartItem[0].quantity + quantity })
-              .where(eq(cart.userId, userId) && eq(cart.productId, productId));
-            res.status(200).json({ message: 'Cart updated successfully' });
-            return
-        } else {
-            await db.insert(cart).values({
-                userId,
-                productId,
-                quantity
-            })
-        }
+      // Check if the product is already in the user's cart
+      const existingCartItem = await db
+          .select()
+          .from(cart)
+          .where(and(eq(cart.userId, userId), eq(cart.productId, productId)))
+          .limit(1);
 
-        res.status(201).json({ message: 'Product added to cart successfully' });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: "Server Error"})
+      if (existingCartItem.length > 0) {
+          // Update quantity if item exists in the cart
+          await db
+              .update(cart)
+              .set({ quantity: existingCartItem[0].quantity + quantity })
+              .where(and(eq(cart.userId, userId), eq(cart.productId, productId)));
+          
+          res.status(200).json({ message: 'Cart updated successfully' });
+          return
+      } else {
+          // Add new item to the cart
+          await db.insert(cart).values({
+              userId,
+              productId,
+              quantity
+          });
+
+          res.status(201).json({ message: 'Product added to cart successfully' });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const updateCartItem = async (req: Request, res: Response) => {
+  const {userId, productId, quantity} = req.body;
+
+  try{
+    if (!userId || !productId || quantity < 0) {
+      res.status(400).json({ message: "Invalid data" });
+      return
     }
-}
+
+    const req_product = await db.select().from(cart).where(and(eq(cart.userId, userId), eq(cart.productId, productId))).limit(1);
+
+    if (req_product.length === 0) {
+      res.status(404).json({ message: "Product not found!" });
+      return
+    }
+
+    await db.update(cart).set({ quantity: quantity }).where(and(eq(cart.userId, userId), eq(cart.productId, productId)));
+
+    res.status(201).json({ message: 'Product updated to cart successfully' });
+    
+  } catch (error) {
+    res.status(500).json({message: "Server Error"})
+  }
+} 
+
 
 export const deleteItemCart = async (req: Request, res: Response) => {
     try {
