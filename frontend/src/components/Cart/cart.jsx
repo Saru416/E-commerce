@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Navbar/navbar";
 import { getCart, updateCartItem, deleteCartItem } from "../../redux/slice/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const fullImageUrl = "http://localhost:3000";
@@ -24,6 +25,12 @@ const Cart = () => {
         console.log("User Id not found!");
       }
     };
+
+  const navigate = useNavigate();
+
+  const handleCheckOut = () => {
+    navigate('/order');
+  };
 
   const subtotal = items !== undefined ? items.reduce(
     (acc, item) => acc + item.quantity * item.productPrice,
@@ -158,6 +165,7 @@ const Cart = () => {
                     type="button"
                     className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800"
                     disabled={items === undefined}
+                    onClick={handleCheckOut}
                   >
                     Checkout
                     <svg

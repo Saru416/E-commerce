@@ -11,7 +11,7 @@ const HomePage = () => {
 
   const handleExplore = () => {
     if (isAuthenticated === true) {
-      navigate("collections");
+      navigate("/collections");
     } else {
       navigate("/login");
     }
