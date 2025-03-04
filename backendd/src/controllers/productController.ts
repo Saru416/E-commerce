@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { product } from "../db/schema";
 import { db } from "../db/db";
 import multer from "multer";
-import path from "path";
 import { eq } from "drizzle-orm";
 
 const storage = multer.diskStorage({

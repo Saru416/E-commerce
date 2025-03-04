@@ -1,35 +1,100 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getCart } from "../../redux/slice/cartSlice";
 
 const Order = () => {
-  const [address, setAddress] = useState(true);
+  const [step, setStep] = useState(true);
+  const [addaddress, setAddaddress] = useState(false);
+  const [address, setAddress] = useState([]);
 
-  const toggleStep = () => {
-    setAddress((prevState) => !prevState);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user?.id) {
+      const userId = user.id; // Replace with the actual user ID
+      dispatch(getCart(userId));
+    }
+  }, [dispatch, user]);
+
+  const { items, status, error } = useSelector((state) => state.cart);
+
+  const subtotal =
+    items !== undefined
+      ? items.reduce((acc, item) => acc + item.quantity * item.productPrice, 0)
+      : 0;
+  const shipping = items !== undefined ? 100.0 : 0.0;
+  const total = subtotal + shipping;
+
+  // State to hold form data
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
+    isDefault: false,
+  });
+
+  const handleStepchange = () => {
+    setStep(false);
+  };
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.address || !formData.pincode) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+    setAddress([...address, formData]);
+    setFormData({
+      name: "",
+      address: "",
+      city: "",
+      state: "",
+      pincode: "",
+      isDefault: false,
+    });
   };
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <div className="m-auto">
-        <div className="flex flex-row">
+      <div className="m-auto w-full max-w-lg">
+        <div className="flex">
           <button
             type="button"
-            className="relative flex justify-center items-center px-5 py-2.5 font-medium hover:bg-gray-400 tracking-wide capitalize rounded-md focus:outline-none transition duration-300 transform active:scale-95 ease-in-out mb-2 w-1/2"
+            className={`relative flex-1 justify-center items-center px-5 py-2.5 font-medium ${
+              step ? "bg-gray-400" : "bg-gray-200"
+            } tracking-wide capitalize rounded-md focus:outline-none transition duration-300 transform active:scale-95 ease-in-out mb-2`}
           >
-            <span className="pl-2 mx-1">step 1</span>
+            Step 1
           </button>
           <button
             type="button"
-            className="relative flex justify-center items-center px-5 py-2.5 font-medium hover:bg-gray-400 tracking-wide capitalize rounded-md focus:outline-none transition duration-300 transform active:scale-95 ease-in-out mb-2 w-1/2"
-            onClick={toggleStep}
+            className={`relative flex-1 justify-center items-center px-5 py-2.5 font-medium ${
+              !step ? "bg-gray-400" : "bg-gray-200"
+            } tracking-wide capitalize rounded-md focus:outline-none transition duration-300 transform active:scale-95 ease-in-out mb-2`}
           >
-            <span className="pl-2 mx-1">step 2</span>
+            Step 2
           </button>
         </div>
-        {address ? (
+
+        {step ? (
           <div>
             <button
               type="button"
               className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize bg-black rounded-md hover:bg-gray-900 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out"
+              onClick={() => setAddaddress(true)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -45,104 +110,121 @@ const Order = () => {
                   <path d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z"></path>
                 </g>
               </svg>
-              <span className="pl-2 mx-1">Add new Address</span>
+              <span className="pl-2 mx-1">Add New Address</span>
             </button>
-            <div className="mt-5 bg-white rounded-lg shadow">
-              <div className="flex">
-                <div className="flex-1 py-5 pl-5 overflow-hidden">
-                  <h1 className="inline text-2xl font-semibold leading-none">
-                    Enter Address
-                  </h1>
-                </div>
-              </div>
-              <div className="px-5 pb-5">
+
+            {addaddress && (
+              <form
+                onSubmit={handleSubmit}
+                className="mt-5 bg-white rounded-lg shadow p-5"
+              >
+                <h1 className="text-2xl font-semibold mb-3">Enter Address</h1>
+
                 <input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
                   placeholder="Name"
-                  className="text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200 focus:border-blueGray-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-2 ring-gray-400"
+                  className="w-full px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
                 />
                 <input
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
                   placeholder="Address"
-                  className="text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200 focus:border-blueGray-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-2 ring-gray-400"
+                  className="w-full px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
                 />
-                <div class="flex">
-                  <div className="flex-grow w-1/4 pr-2">
-                    <input
-                      placeholder="City"
-                      className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
-                    />
-                  </div>
-                  <div className="flex-grow">
-                    <input
-                      placeholder="State"
-                      className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
-                    />
-                  </div>
+                <div className="flex space-x-2">
+                  <input
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    placeholder="City"
+                    className="flex-1 px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
+                  />
+                  <input
+                    name="state"
+                    value={formData.state}
+                    onChange={handleInputChange}
+                    placeholder="State"
+                    className="flex-1 px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
+                  />
                 </div>
                 <input
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleInputChange}
                   placeholder="Pincode"
-                  className="flex-grow w-full pr-2 text-black placeholder-gray-600 px-4 py-2.5 mt-2 text-base transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200 focus:border-blueGray-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-2 ring-gray-400"
+                  className="w-full px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
                 />
+
                 <div className="flex items-center pt-3">
                   <input
                     type="checkbox"
+                    name="isDefault"
+                    checked={formData.isDefault}
+                    onChange={handleInputChange}
                     className="w-4 h-4 text-black bg-gray-300 border-none rounded-md focus:ring-transparent"
                   />
-                  <label className="block ml-2 text-sm text-gray-900">
+                  <label className="ml-2 text-sm text-gray-900">
                     Save as default address
                   </label>
                 </div>
-              </div>
-              <hr className="mt-4" />
-              <div className="flex flex-row-reverse p-3">
-                <button
-                  type="button"
-                  className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize bg-black rounded-md hover:bg-gray-800 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out"
-                >
-                  <span className="mx-1">Save</span>
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center px-5 py-2.5 font-medium tracking-wide text-black capitalize rounded-md hover:bg-red-200 hover:text-red-600 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out ml-3"
-                >
-                  <span className="mx-1">Delete</span>
-                </button>
-              </div>
-            </div>
-            <div className="mt-5 bg-white shadow cursor-pointer rounded-xl">
-              <div className="flex">
-                <div className="flex-1 py-5 pl-5 overflow-hidden">
-                  <ul>
-                    <li className="text-xs text-gray-600 uppercase ">
-                      Address 1
-                    </li>
-                    <li>Name</li>
-                    <li>Address</li>
-                    <li>Pincode</li>
-                  </ul>
-                </div>
-                <div class="flex-none pt-2.5 pr-2.5 pl-1">
+
+                <div className="flex flex-row-reverse p-3">
+                  <button
+                    type="submit"
+                    className="px-5 py-2 text-white bg-black rounded-md hover:bg-gray-800 transition duration-300 transform active:scale-95"
+                  >
+                    Save
+                  </button>
                   <button
                     type="button"
-                    className="px-2 py-2 font-medium tracking-wide text-black capitalize transition duration-300 ease-in-out transform rounded-xl hover:bg-gray-300 focus:outline-none active:scale-95"
+                    className="px-5 py-2 text-black rounded-md hover:bg-red-200 hover:text-red-600 transition duration-300 transform active:scale-95 ml-3"
+                    onClick={() => setAddaddress(false)}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      width="24px"
-                      fill="#000000"
-                    >
-                      <path d="M0 0h24v24H0V0z" fill="none"></path>
-                      <path
-                        d="M5 18.08V19h.92l9.06-9.06-.92-.92z"
-                        opacity=".3"
-                      ></path>
-                      <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83zM3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19z"></path>
-                    </svg>
+                    Cancel
                   </button>
                 </div>
-              </div>
-            </div>
+              </form>
+            )}
+
+            <h2 className="mt-5 text-xl font-semibold">Saved Addresses</h2>
+            {address.length > 0 ? (
+              address.map((addr, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between mt-3 bg-white shadow rounded-xl p-5"
+                >
+                  <div>
+                    <ul>
+                      <li className="text-xs text-gray-600 uppercase">
+                        Address {index + 1}
+                      </li>
+                      <li>{addr.name}</li>
+                      <li>{addr.address}</li>
+                      <li>
+                        {addr.city}, {addr.state}
+                      </li>
+                      <li>{addr.pincode}</li>
+                      {addr.isDefault && (
+                        <li className="text-green-600 font-bold">
+                          Default Address
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                  <button
+                    className="h-10 px-5 py-2 text-white bg-green-500 rounded-md hover:bg-green-700 transition duration-300 transform active:scale-95"
+                    onClick={handleStepchange}
+                  >
+                    Continue
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600 mt-3">No addresses added yet.</p>
+            )}
           </div>
         ) : (
           <div>
@@ -150,22 +232,16 @@ const Order = () => {
               type="button"
               className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize bg-black rounded-md hover:bg-gray-900 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 0 24 24"
-                width="24px"
-                fill="#FFFFFF"
-              >
-                <g>
-                  <rect fill="none" height="24" width="24"></rect>
-                </g>
-                <g>
-                  <path d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z"></path>
-                </g>
-              </svg>
-              <span className="pl-2 mx-1">Add new Address</span>
+              <span className="pl-2 mx-1">Total Amount: ₹ {total}</span>
             </button>
+            <div className="flex flex-col mt-5 bg-white rounded-lg shadow p-5">
+              <h1 className="text-center text-xl font-semibold">
+                Pay using UPI
+              </h1>
+              <div className="bg-gray-400 h-56 w-52 p-5 mt-5 self-center">
+                QR - Image
+              </div>
+            </div>
           </div>
         )}
       </div>

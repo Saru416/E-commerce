@@ -11,6 +11,7 @@ import Collections from "./components/Collections/collections";
 import withAuth from "./Routes/ProtectedRoute";
 import Cart from "./components/Cart/cart";
 import Order from "./components/Order/order";
+import User from "./components/user/userProfile";
 
 const ProtectedHomePage = withAuth(HomePage);
 const ProtectedAdminDashboard = withAuth(AdminDashboard);
@@ -30,6 +31,7 @@ const App = () => {
         <Route path='/collections' element={<ProtectedCollections/>}/>
         <Route path='/cart' element={<ProtectedCart/>}/>
         <Route path='/order' element={<Order/>}/>
+        <Route path='/myProfile' element={<User/>}/>
         {/* Other routes */}
       </Routes>
     </Router>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import UserImage from "../../assets/working.png"
+import UserImage from "../../assets/working.png";
 
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false); // State to control search bar visibility
@@ -16,7 +16,7 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const handleNavi = () => {
+  const handleColl = () => {
     navigate("/collections");
   };
 
@@ -61,9 +61,12 @@ const Navbar = () => {
               />
             </div>
             {/* User Display Name */}
-            <span className="text-lg font-semibold">
-              {user.user_metadata.display_name || "Guest"}
-            </span>
+            <button onClick={() => navigate('/myProfile')}>
+              {" "}
+              <span className="text-lg font-semibold">
+                {user.user_metadata.display_name || "Guest"}
+              </span>
+            </button>
           </div>
         ) : (
           <h1>MENU</h1>
@@ -80,11 +83,11 @@ const Navbar = () => {
       </div>
 
       <div className="basis-1/5 flex items-center justify-end">
-        <button className="pl-4" onClick={handleNavi}>
-          User
-        </button>
         <button className="pl-4" onClick={handleHome}>
           Home
+        </button>
+        <button className="pl-4" onClick={handleColl}>
+          Collections
         </button>
         <button className="pl-4" onClick={toggleSearch}>
           Search
