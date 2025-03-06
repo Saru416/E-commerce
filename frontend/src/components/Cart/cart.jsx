@@ -140,13 +140,13 @@ const Cart = () => {
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-400">Subtotal</p>
                     <p className="text-lg font-semibold text-gray-900">
-                    ₹{subtotal.toFixed(2)}
+                    ₹ {subtotal.toFixed(2)}
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-400">Shipping</p>
                     <p className="text-lg font-semibold text-gray-900">
-                    ₹{shipping.toFixed(2)}
+                    ₹ {shipping.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -155,8 +155,8 @@ const Cart = () => {
                   <p className="text-2xl font-semibold text-gray-900">
                     <span className="text-xs font-normal text-gray-400">
                       Rupee
-                    </span>{" "}
-                    ₹{total.toFixed(2)}
+                    </span>{"  "}
+                    ₹ {total.toFixed(2)}
                   </p>
                 </div>
 

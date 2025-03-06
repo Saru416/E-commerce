@@ -44,8 +44,6 @@ export const addToCart = async (req: Request, res: Response) => {
           return
       }
 
-      console.log(userId);
-
       // Check if the product is already in the user's cart
       const existingCartItem = await db
           .select()

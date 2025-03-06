@@ -50,7 +50,6 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.status(404).json({ message: "Product not found!" });
             return;
         }
-        console.log(userId);
         // Check if the product is already in the user's cart
         const existingCartItem = yield db_1.db
             .select()

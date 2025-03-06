@@ -30,7 +30,6 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 
-
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
   { name: "Best Rating", href: "#", current: false },
@@ -160,7 +159,7 @@ const Collections = () => {
 
   const applyFilters = () => {
     let filtered = [...products];
-  
+
     if (priceFilter.length > 0) {
       filtered = filtered.filter((product) =>
         priceFilter.some((range) => {
@@ -169,22 +168,22 @@ const Collections = () => {
         })
       );
     }
-  
+
     if (categoryFilter.length > 0) {
       filtered = filtered.filter((product) =>
         categoryFilter.includes(String(product.category))
       );
     }
-  
+
     // Apply Sorting
     if (sortBy === "lowToHigh") {
       filtered.sort((a, b) => a.price - b.price);
     } else if (sortBy === "highToLow") {
       filtered.sort((a, b) => b.price - a.price);
     }
-  
+
     return filtered;
-  };  
+  };
 
   const isProductInCart = (productId) => {
     if (!cartItems || cartItems.length === 0) return null;
@@ -199,7 +198,7 @@ const Collections = () => {
 
   const isAddDisabled = (productId, cartItem) => {
     const product = products.find((p) => p.id === productId);
-    return cartItem.quantity >= product.quantity; // Disable if at max quantity
+    return cartItem.quantity >= product.availableQuantity; // Disable if at max quantity
   };
 
   const filteredProducts = applyFilters();
@@ -436,8 +435,12 @@ const Collections = () => {
                               <div className="group grid size-4 grid-cols-1">
                                 <input
                                   value={option.value}
-                                  checked={categoryFilter.includes(option.value)}
-                                  onChange={(e) => handlecategoryFilter(e.target.value)}
+                                  checked={categoryFilter.includes(
+                                    option.value
+                                  )}
+                                  onChange={(e) =>
+                                    handlecategoryFilter(e.target.value)
+                                  }
                                   id={`filter-${section.id}-${optionIdx}`}
                                   name={`${section.id}[]`}
                                   type="checkbox"

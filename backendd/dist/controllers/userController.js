@@ -9,9 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllusers = exports.getuser = exports.login = exports.signUp = void 0;
+exports.getAddress = exports.addAddress = exports.getAllusers = exports.getuser = exports.login = exports.signUp = void 0;
 //import { supabase } from "../services/supabase_services";
 const supabase_service_1 = require("../db/supabase-service");
+const schema_1 = require("../db/schema");
+const db_1 = require("../db/db");
+const drizzle_orm_1 = require("drizzle-orm");
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, display_name } = req.body;
     try {
@@ -29,11 +32,11 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.status(400).json({ message: error.message });
         }
         else {
-            res.status(201).json({ message: 'User signed up successfully!', data });
+            res.status(201).json({ message: "User signed up successfully!", data });
         }
     }
     catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: "Server Error" });
     }
 });
 exports.signUp = signUp;
@@ -49,11 +52,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.status(400).json({ message: error.message });
         }
         else {
-            res.status(200).json({ message: 'User logged in successfully!', data });
+            res.status(200).json({ message: "User logged in successfully!", data });
         }
     }
     catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: "Server Error" });
     }
 });
 exports.login = login;
@@ -64,11 +67,11 @@ const getuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.status(400).json({ message: error.message });
         }
         else {
-            res.status(200).json({ message: 'User- ', data });
+            res.status(200).json({ message: "User- ", data });
         }
     }
     catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: "Server Error" });
     }
 });
 exports.getuser = getuser;
@@ -89,3 +92,38 @@ const getAllusers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getAllusers = getAllusers;
+const addAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user_id, address, city, state, pincode, country } = req.body;
+    try {
+        if (!user_id || !address || !city || !state || !pincode || !country) {
+            res.status(400).json({ message: "All fields Required" });
+            return;
+        }
+        yield db_1.db
+            .insert(schema_1.user_address)
+            .values({ user_id, address, city, state, pincode, country });
+        res.status(201).json({ message: "Address added" });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Server Error!" });
+    }
+});
+exports.addAddress = addAddress;
+const getAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    try {
+        const addresses = yield db_1.db
+            .select()
+            .from(schema_1.user_address)
+            .where((0, drizzle_orm_1.eq)(schema_1.user_address.user_id, userId));
+        if (addresses.length === 0) {
+            res.status(404).json({ message: "No Address Saved Yet!" });
+            return;
+        }
+        res.status(200).json(addresses);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Server Error!" });
+    }
+});
+exports.getAddress = getAddress;

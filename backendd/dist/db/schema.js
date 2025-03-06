@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cart = exports.Orderitem = exports.order = exports.product = exports.category = void 0;
+exports.cart = exports.Orderitem = exports.user_address = exports.order = exports.product = exports.category = void 0;
 const pg_core_1 = require("drizzle-orm/pg-core");
 // export const user = pgTable('user', {
 //   id: serial('id').primaryKey(),
@@ -34,6 +34,16 @@ exports.order = (0, pg_core_1.pgTable)('order', {
     order_date: (0, pg_core_1.date)('order_date'),
     user_id: (0, pg_core_1.uuid)('user_id').notNull(),
     total_amount: (0, pg_core_1.integer)('total_amount')
+});
+exports.user_address = (0, pg_core_1.pgTable)('user_address', {
+    id: (0, pg_core_1.serial)('id').primaryKey(),
+    user_id: (0, pg_core_1.uuid)('user_id').notNull(),
+    address: (0, pg_core_1.text)('address').notNull(),
+    city: (0, pg_core_1.text)('city').notNull(),
+    state: (0, pg_core_1.text)('state').notNull(),
+    pincode: (0, pg_core_1.text)('pincode').notNull(),
+    country: (0, pg_core_1.text)('country').notNull(),
+    createdAt: (0, pg_core_1.timestamp)('created_at').notNull().defaultNow(),
 });
 exports.Orderitem = (0, pg_core_1.pgTable)('Orderitem', {
     id: (0, pg_core_1.serial)('id').primaryKey(),

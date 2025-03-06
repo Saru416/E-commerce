@@ -37,6 +37,17 @@ export const order = pgTable('order',{
     total_amount: integer('total_amount')
 });
 
+export const user_address = pgTable('user_address',{
+  id: serial('id').primaryKey(),
+  user_id: uuid('user_id').notNull(),
+  address: text('address').notNull(),
+  city: text('city').notNull(),
+  state: text('state').notNull(),
+  pincode: text('pincode').notNull(),
+  country: text('country').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
 export const Orderitem = pgTable('Orderitem',{
     id: serial('id').primaryKey(),
     order_id: integer('order_id')

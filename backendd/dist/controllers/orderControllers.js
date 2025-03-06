@@ -65,6 +65,15 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         })));
         // Step 4: Clear cart after placing order
         yield db_1.db.delete(schema_1.cart).where((0, drizzle_orm_1.eq)(schema_1.cart.userId, userId));
+        // Step 5: Update the product table
+        yield Promise.all(validCartItems.map((item) => __awaiter(void 0, void 0, void 0, function* () {
+            yield db_1.db
+                .update(schema_1.product)
+                .set({
+                availableQuantity: (0, drizzle_orm_1.sql) `${schema_1.product.availableQuantity} - ${item.quantity}`,
+            })
+                .where((0, drizzle_orm_1.eq)(schema_1.product.id, item.productId));
+        })));
         res.status(201).json({ message: "Order placed successfully" });
     }
     catch (error) {

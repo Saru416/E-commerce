@@ -21,7 +21,6 @@ export const getCart = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}/getCart/${userId}`);
-      console.log(response.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.message);

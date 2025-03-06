@@ -4,6 +4,7 @@ import productReducer from './slice/productSlice.js'
 import categoryReducer from './slice/categorySlice.js'
 import cartReducer from './slice/cartSlice.js'
 import orderReducer from './slice/orderSlice.js'
+import addressReducer from './slice/addressSlice.js'
 
 export default configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
     product: productReducer,
     category: categoryReducer,
     cart: cartReducer,
-    order: orderReducer
+    order: orderReducer,
+    address: addressReducer
   },
 })

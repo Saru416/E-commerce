@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getCart } from "../../redux/slice/cartSlice";
+import { getAddress, addAddress } from "../../redux/slice/addressSlice";
 
 const Order = () => {
   const [step, setStep] = useState(true);
   const [addaddress, setAddaddress] = useState(false);
-  const [address, setAddress] = useState([]);
+  //const [address, setAddress] = useState([]);
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const address = useSelector((state) => state.address.addresses);
 
   useEffect(() => {
     if (user?.id) {
       const userId = user.id; // Replace with the actual user ID
+      console.log(address)
       dispatch(getCart(userId));
+      dispatch(getAddress(userId));
     }
   }, [dispatch, user]);
 
@@ -56,7 +60,7 @@ const Order = () => {
       alert("Please fill in all required fields.");
       return;
     }
-    setAddress([...address, formData]);
+    addAddress([...address, formData]);
     setFormData({
       name: "",
       address: "",
@@ -201,7 +205,7 @@ const Order = () => {
                       <li className="text-xs text-gray-600 uppercase">
                         Address {index + 1}
                       </li>
-                      <li>{addr.name}</li>
+                      {/* <li>{addr.name}</li> */}
                       <li>{addr.address}</li>
                       <li>
                         {addr.city}, {addr.state}
