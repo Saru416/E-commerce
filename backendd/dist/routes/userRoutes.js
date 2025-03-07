@@ -11,5 +11,5 @@ router.post("/login", userController_1.login);
 router.get("/getuser", userController_1.getuser);
 router.get("/getAllusers", userController_1.getAllusers);
 router.post("/addAddress", userController_1.addAddress);
-router.get("/getAddress", userController_1.getAddress);
+router.get("/getAddress/:userId", userController_1.getAddress);
 exports.default = router;

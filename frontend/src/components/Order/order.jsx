@@ -5,7 +5,7 @@ import { getAddress, addAddress } from "../../redux/slice/addressSlice";
 
 const Order = () => {
   const [step, setStep] = useState(true);
-  const [addaddress, setAddaddress] = useState(false);
+  const [addaddr, setAddaddress] = useState(false);
   //const [address, setAddress] = useState([]);
 
   const dispatch = useDispatch();
@@ -15,7 +15,6 @@ const Order = () => {
   useEffect(() => {
     if (user?.id) {
       const userId = user.id; // Replace with the actual user ID
-      console.log(address)
       dispatch(getCart(userId));
       dispatch(getAddress(userId));
     }
@@ -32,11 +31,13 @@ const Order = () => {
 
   // State to hold form data
   const [formData, setFormData] = useState({
+    user_id: `${user.id}`,
     name: "",
     address: "",
     city: "",
     state: "",
     pincode: "",
+    country: "",
     isDefault: false,
   });
 
@@ -60,15 +61,18 @@ const Order = () => {
       alert("Please fill in all required fields.");
       return;
     }
-    addAddress([...address, formData]);
+    dispatch(addAddress(formData));
     setFormData({
+      user_id: user.id,
       name: "",
       address: "",
       city: "",
       state: "",
       pincode: "",
+      country: "",
       isDefault: false,
     });
+    setAddaddress(false); 
   };
 
   return (
@@ -117,7 +121,7 @@ const Order = () => {
               <span className="pl-2 mx-1">Add New Address</span>
             </button>
 
-            {addaddress && (
+            {addaddr && (
               <form
                 onSubmit={handleSubmit}
                 className="mt-5 bg-white rounded-lg shadow p-5"
@@ -154,14 +158,22 @@ const Order = () => {
                     className="flex-1 px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
                   />
                 </div>
-                <input
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleInputChange}
-                  placeholder="Pincode"
-                  className="w-full px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
-                />
-
+                <div className="flex space-x-2">
+                  <input
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    placeholder="Country"
+                    className="flex-1 px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
+                  />
+                  <input
+                    name="pincode"
+                    value={formData.pincode}
+                    onChange={handleInputChange}
+                    placeholder="Pincode"
+                    className="flex-1 px-4 py-2 mt-2 bg-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 ring-gray-400"
+                  />
+                </div>
                 <div className="flex items-center pt-3">
                   <input
                     type="checkbox"
@@ -205,12 +217,12 @@ const Order = () => {
                       <li className="text-xs text-gray-600 uppercase">
                         Address {index + 1}
                       </li>
-                      {/* <li>{addr.name}</li> */}
+                      <li>{addr.name}</li>
                       <li>{addr.address}</li>
                       <li>
                         {addr.city}, {addr.state}
                       </li>
-                      <li>{addr.pincode}</li>
+                      <l1>{addr.country}, {addr.pincode}</l1>
                       {addr.isDefault && (
                         <li className="text-green-600 font-bold">
                           Default Address

@@ -39,6 +39,7 @@ export const order = pgTable('order',{
 
 export const user_address = pgTable('user_address',{
   id: serial('id').primaryKey(),
+  name: text('name').notNull(),
   user_id: uuid('user_id').notNull(),
   address: text('address').notNull(),
   city: text('city').notNull(),

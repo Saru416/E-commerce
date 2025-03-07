@@ -2,132 +2,184 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import UserImage from "../../assets/working.png";
 import { getOrderHistory } from "../../redux/slice/orderSlice";
+import { getAddress } from "../../redux/slice/addressSlice";
 
 const User = () => {
   const user = useSelector((state) => state.auth.user);
-  const [option, setOption] = useState(0);
-  const { order, status, error } = useSelector((state) => state.order);
-
+  const { order } = useSelector((state) => state.order);
+  const address = useSelector((state) => state.address.addresses);
   const dispatch = useDispatch();
+  const [activeOption, setActiveOption] = useState("profile");
+
   const fullImageUrl = "http://localhost:3000";
 
   useEffect(() => {
     if (user?.id) {
-      const userId = user.id; // Replace with the actual user ID
-      console.log(order);
-      dispatch(getOrderHistory(userId));
+      dispatch(getOrderHistory(user.id));
+      dispatch(getAddress(user?.id));
     }
   }, [dispatch, user]);
 
-  const renderContent = () => {
-    switch (option) {
-      case 0:
-        return <div>{user.user_metadata.display_name || "Guest"}</div>;
-      case 1:
-        const OrderItem = ({ order }) => {
-          return (
-            <div className="box p-8 rounded-3xl bg-gray-100 grid grid-cols-8 mb-7 cursor-pointer transition-all duration-500 hover:bg-indigo-50 max-lg:max-w-xl max-lg:mx-auto">
-              <div className="col-span-8 sm:col-span-4 lg:col-span-1 sm:row-span-4 lg:row-span-1">
-                <img
-                  src={fullImageUrl + order[0].orderItems[0].productImage}
-                  alt={order.name}
-                  className="max-lg:w-auto max-sm:mx-auto rounded-xl object-cover"
-                />
-              </div>
-              <div className="col-span-8 sm:col-span-4 lg:col-span-3 flex h-full justify-center pl-4 flex-col max-lg:items-center">
-                <h5 className="font-manrope font-semibold text-2xl leading-9 text-black mb-1 whitespace-nowrap">
-                  {order[0].orderItems[0].productName}
-                </h5>
-                {/* <p className="font-normal text-base leading-7 text-gray-600 max-md:text-center">
-                  {order.color}
-                </p> */}
-              </div>
-              <div className="col-span-8 sm:col-span-4 lg:col-span-1 flex items-center justify-center">
-                <p className="font-semibold text-xl leading-8 text-black">
-                  {order[0].orderItems[0].price}
-                </p>
-              </div>
-              <div className="col-span-8 sm:col-span-4 lg:col-span-1 flex items-center justify-center ">
-                <p className="font-semibold text-xl leading-8 text-indigo-600 text-center">
-                  {order[0].orderItems[0].quantity}
-                </p>
-              </div>
-              <div className="col-span-8 sm:col-span-4 lg:col-span-2 flex items-center justify-center ">
-                <p className="font-semibold text-xl leading-8 text-black">
-                  {order[0].date}
-                </p>
-              </div>
+  const menuOptions = [
+    { id: "profile", label: "Profile" },
+    { id: "orders", label: "Orders" },
+    { id: "address", label: "Address" },
+  ];
+
+  const OrderItem = ({ orderItem }) => (
+    <>
+      {orderItem.map((order) =>
+        order.orderItems.map((item, index) => (
+          <div
+            key={`${order.id}-${index}`}
+            className="box p-5 rounded-2xl bg-gray-100 grid grid-cols-8 mb-4 transition-all duration-500 hover:bg-indigo-50"
+          >
+            <div className="col-span-2 flex items-center">
+              <img
+                src={fullImageUrl + item.productImage}
+                alt={item.productName}
+                className="w-24 h-24 rounded-xl object-cover"
+              />
             </div>
-          );
-        };
+            <div className="col-span-3 flex flex-col justify-center">
+              <h5 className="font-semibold text-lg">{item.productName}</h5>
+            </div>
+            <div className="col-span-1 flex items-center justify-center">
+              <p className="text-black font-semibold">₹{item.price}</p>
+            </div>
+            <div className="col-span-1 flex items-center justify-center">
+              <p className="text-indigo-600 font-semibold">{item.quantity}</p>
+            </div>
+            <div className="col-span-1 flex items-center justify-center">
+              <p className="text-black font-semibold">{order.date}</p>
+            </div>
+          </div>
+        ))
+      )}
+    </>
+  );
+
+  const renderContent = () => {
+    switch (activeOption) {
+      case "profile":
         return (
-          <section className="py-10 bg-gray-50">
-            <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
-              <div className="main-data p-8 sm:p-14 bg-gray-50 rounded-3xl">
-                <h2 className="text-center font-manrope font-semibold text-4xl text-black mb-16">
-                  Order History
-                </h2>
-                <div className="grid grid-cols-8 pb-9">
-                  <div className="col-span-8 lg:col-span-4">
-                    <p className="font-medium text-lg leading-8 text-indigo-600">
-                      Product{" "}
-                    </p>
-                  </div>
-                  <div className="col-span-1 max-lg:hidden">
-                    <p className="font-medium text-lg leading-8 text-gray-600 text-center">
-                      Price{" "}
-                    </p>
-                  </div>
-                  <div className="col-span-1 max-lg:hidden flex items-center justify-center">
-                    <p className="font-medium text-lg leading-8 text-gray-600">
-                      Qty{" "}
-                    </p>
-                  </div>
-                  <div className="col-span-2 max-lg:hidden ml-6">
-                    <p className="font-medium text-lg leading-8 text-gray-500">
-                      Ordered on{" "}
-                    </p>
-                  </div>
-                </div>
-                {order.map((ord) => (
-                  <OrderItem key={ord.id} order={ord} />
-                ))}
+          <h2 className="text-center text-2xl font-semibold">
+            {user?.user_metadata?.display_name || "Guest"}
+          </h2>
+        );
+
+      case "orders":
+        return (
+          <section className="py-5 bg-gray-50 w-full">
+            <div className="max-w-5xl mx-auto px-4">
+              <h2 className="text-center font-semibold text-3xl mb-6">
+                Order History
+              </h2>
+              <div className="grid grid-cols-8 pb-4 text-gray-600 font-medium">
+                <p className="col-span-2">Product</p>
+                <p className="col-span-3">Name</p>
+                <p className="col-span-1 text-center">Price</p>
+                <p className="col-span-1 text-center">Qty</p>
+                <p className="col-span-1 text-center">Ordered On</p>
               </div>
+              {order?.length > 0 ? (
+                order.map((ord) => <OrderItem key={ord.id} orderItem={ord} />)
+              ) : (
+                <p className="text-center text-gray-500">No orders found.</p>
+              )}
             </div>
           </section>
+        );
+
+      case "address":
+        return (
+          <div className="w-full max-w-3xl mx-auto">
+            <h2 className="text-center text-2xl font-semibold mb-5">
+              Manage Address
+            </h2>
+            {address.length > 0 ? (
+              address.map((addr, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center mt-3 bg-white shadow rounded-xl p-5"
+                >
+                  <div>
+                    <ul>
+                      <li className="text-xs text-gray-600 uppercase">
+                        Address {index + 1}
+                      </li>
+                      <li>{addr.name}</li>
+                      <li>{addr.address}</li>
+                      <li>
+                        {addr.city}, {addr.state}
+                      </li>
+                      <li>
+                        {addr.country}, {addr.pincode}
+                      </li>
+                      {addr.isDefault && (
+                        <li className="text-green-600 font-bold">
+                          Default Address
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                  <button className="h-10 px-5 py-2 text-white bg-black rounded-md hover:bg-gray-700 transition duration-300 transform active:scale-95">
+                    Edit
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600 mt-3 text-center">
+                No addresses added yet.
+              </p>
+            )}
+          </div>
+        );
+
+      default:
+        return (
+          <h2 className="text-center text-2xl font-semibold">
+            Select an Option
+          </h2>
         );
     }
   };
 
   return (
     <div className="flex flex-row bg-white">
-      <div className="flex flex-col mt-10 ml-5 mr-5 mb-5 border-gray-600 h-[50rem] w-1/6 border-2 rounded-xl">
-        <div className="flex mt-10 ml-10">
-          {/* User Profile Picture */}
-          <div className="w-14 h-14 rounded-full bg-gray-300 overflow-hidden mr-3">
+      {/* Sidebar */}
+      <div className="flex flex-col p-6 w-1/5 h-screen border-r border-gray-200">
+        <div className="flex items-center space-x-3 mb-10">
+          <div className="w-14 h-14 rounded-full bg-gray-300 overflow-hidden">
             <img
               src={UserImage}
               alt="User Avatar"
               className="w-full h-full object-cover"
             />
           </div>
-          {/* User Display Name */}{" "}
-          <span className="text-lg font-semibold mt-4">
-            {user.user_metadata.display_name || "Guest"}
+          <span className="text-lg font-semibold">
+            {user?.user_metadata?.display_name || "Guest"}
           </span>
         </div>
-        <div className="mt-40 ml-16 text-xl">
-          <button className="justify-start" onClick={() => setOption(1)}>
-            Orders
-          </button>
-        </div>
-        <div className="mt-10 ml-16 text-xl">
-          <button className="justify-start" onClick={() => setOption(2)}>
-            Address
-          </button>
+        <div className="space-y-5">
+          {menuOptions.map((option) => (
+            <button
+              key={option.id}
+              onClick={() => setActiveOption(option.id)}
+              className={`w-full text-left text-xl p-3 rounded-lg transition-all ${
+                activeOption === option.id
+                  ? "bg-black text-white"
+                  : "hover:bg-gray-200"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
       </div>
-      <div className="flex mt-10 mr-5 mb-5 border-gray-600 h-[50rem] w-5/6 border-2 rounded-xl justify-center bg-gray-50">
+
+      {/* Main Content */}
+      <div className="flex flex-1 h-screen justify-center bg-gray-50 p-10">
         {renderContent()}
       </div>
     </div>
