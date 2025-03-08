@@ -4,7 +4,7 @@ import "./index.css";
 import HomePage from "./components/Homepage/homepage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login/login";
-import SignUp from "./components/SIgnup/signup";
+import SignUp from "./components/Signup/signup";
 import AdminDashboard from "./components/Admin/adminDashboard";
 import AdminLogin from "./components/Admin/adminlogin";
 import Collections from "./components/Collections/collections";

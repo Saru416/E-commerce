@@ -93,15 +93,21 @@ const getAllusers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getAllusers = getAllusers;
 const addAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user_id, address, city, state, pincode, country } = req.body;
+    const { name, user_id, address, city, state, pincode, country } = req.body;
     try {
-        if (!user_id || !address || !city || !state || !pincode || !country) {
+        if (!user_id ||
+            !name ||
+            !address ||
+            !city ||
+            !state ||
+            !pincode ||
+            !country) {
             res.status(400).json({ message: "All fields Required" });
             return;
         }
         yield db_1.db
             .insert(schema_1.user_address)
-            .values({ user_id, address, city, state, pincode, country });
+            .values({ name, user_id, address, city, state, pincode, country });
         res.status(201).json({ message: "Address added" });
     }
     catch (error) {

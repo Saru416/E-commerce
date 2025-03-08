@@ -83,13 +83,21 @@ export const getAllusers = async (req: Request, res: Response) => {
 export const addAddress = async (req: Request, res: Response) => {
   const { name, user_id, address, city, state, pincode, country } = req.body;
   try {
-    if (!user_id || !name || !address || !city || !state || !pincode || !country) {
+    if (
+      !user_id ||
+      !name ||
+      !address ||
+      !city ||
+      !state ||
+      !pincode ||
+      !country
+    ) {
       res.status(400).json({ message: "All fields Required" });
       return;
     }
     await db
       .insert(user_address)
-      .values({ name, user_id , address, city, state, pincode, country });
+      .values({ name, user_id, address, city, state, pincode, country });
     res.status(201).json({ message: "Address added" });
   } catch (error) {
     res.status(500).json({ message: "Server Error!" });

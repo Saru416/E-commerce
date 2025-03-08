@@ -37,6 +37,7 @@ exports.order = (0, pg_core_1.pgTable)('order', {
 });
 exports.user_address = (0, pg_core_1.pgTable)('user_address', {
     id: (0, pg_core_1.serial)('id').primaryKey(),
+    name: (0, pg_core_1.text)('name').notNull(),
     user_id: (0, pg_core_1.uuid)('user_id').notNull(),
     address: (0, pg_core_1.text)('address').notNull(),
     city: (0, pg_core_1.text)('city').notNull(),
